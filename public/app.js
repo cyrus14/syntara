@@ -16,7 +16,7 @@ import {
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "REPLACE",
+  apiKey: "AIzaSyDG0vZ9p4X2XlIdP11RLIJ-FKMFvtYIbos",
   authDomain: "syntara-88cc3.firebaseapp.com",
   projectId: "syntara-88cc3",
   storageBucket: "syntara-88cc3.appspot.com",
@@ -24,7 +24,6 @@ const firebaseConfig = {
   appId: "1:311542379658:web:166dc3fd29797b9152a973",
   measurementId: "G-EMH5ZCYG9W"
 };
-
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -39,6 +38,7 @@ const provider = new GoogleAuthProvider();
 const googleSignInBtn = document.getElementById('google-signin-btn');
 const profilePic = document.getElementById('profile-pic');
 const fileInput = document.getElementById('file-input');
+const folderSelect = document.getElementById('folder-select'); // Reference to the folder select dropdown
 const uploadBtn = document.getElementById('upload-btn');
 const welcomeMessage = document.getElementById('welcome-message');
 const progressContainer = document.getElementById('progress-container');
@@ -100,6 +100,7 @@ profilePic.addEventListener('click', () => {
 // Upload File Functionality
 uploadBtn.addEventListener('click', () => {
   const file = fileInput.files[0];
+  const selectedFolder = folderSelect.value; // Get the selected folder
   feedbackMessage.textContent = ''; // Clear any previous messages
   feedbackMessage.classList.remove('text-red-600', 'text-green-600');
 
@@ -108,21 +109,28 @@ uploadBtn.addEventListener('click', () => {
   }
 
   // Optional: Implement file type and size checks here
-  // Example: Restrict to images and PDFs under 5 MB
   const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
   const maxSize = 5 * 1024 * 1024; // 5 MB
   if (!allowedTypes.includes(file.type)) {
+    feedbackMessage.textContent = 'Invalid file type. Only JPEG, PNG, and PDF files are allowed.';
+    feedbackMessage.classList.add('text-red-600');
     return;
   }
   if (file.size > maxSize) {
+    feedbackMessage.textContent = 'File size exceeds the 5MB limit.';
+    feedbackMessage.classList.add('text-red-600');
     return;
   }
 
-  // Encryption logic can be added here before uploading
-
   const user = auth.currentUser;
+  console.log(user != null)
   if (user) {
-    const storageRef = ref(storage, `uploads/${user.uid}/${file.name}`);
+    // Create a reference to the selected folder and file
+    const storagePath = `${selectedFolder}/${file.name}`; // Correct path without "/uploads/"
+    
+    console.log(`Uploading file to: ${storagePath}`); // Log the path to confirm
+
+    const storageRef = ref(storage, storagePath); // Only use selectedFolder here
 
     // Use uploadBytesResumable to track upload progress
     const uploadTask = uploadBytesResumable(storageRef, file);
@@ -148,36 +156,25 @@ uploadBtn.addEventListener('click', () => {
       (error) => {
         // Handle unsuccessful uploads
         console.error(error);
-        // Display error message
         feedbackMessage.textContent = `Error: ${error.message}`;
         feedbackMessage.classList.add('text-red-600');
-        // Hide the progress bar
         progressContainer.classList.add('hidden');
-        // Reset progress bar
         progressBar.style.width = '0%';
-        // Re-enable the upload button
         uploadBtn.disabled = false;
         uploadBtn.classList.remove('opacity-50', 'cursor-not-allowed');
       },
       () => {
         // Handle successful uploads
         console.log('Upload completed successfully');
-        // Keep the progress bar visible for a moment
         setTimeout(() => {
-          // Hide the progress bar
           progressContainer.classList.add('hidden');
-          // Reset progress bar
           progressBar.style.width = '0%';
-        }, 500); // Adjust the delay as needed
-        // Clear the file input
+        }, 500);
         fileInput.value = '';
-        // Display success message
         feedbackMessage.textContent = 'File uploaded successfully!';
         feedbackMessage.classList.add('text-green-600');
-        // Re-enable the upload button
         uploadBtn.disabled = false;
         uploadBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-        // Optionally, reset the feedback message after some time
         setTimeout(() => {
           feedbackMessage.textContent = '';
           feedbackMessage.classList.remove('text-green-600');
@@ -185,5 +182,7 @@ uploadBtn.addEventListener('click', () => {
       }
     );
   } else {
+    feedbackMessage.textContent = 'You must be signed in to upload files.';
+    feedbackMessage.classList.add('text-red-600');
   }
 });
