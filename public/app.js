@@ -16,7 +16,7 @@ import {
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDG0vZ9p4X2XlIdP11RLIJ-FKMFvtYIbos", // Replace with your actual API key
+  apiKey: "REPLACE", // Replace with your actual API key
   authDomain: "syntara-88cc3.firebaseapp.com",
   projectId: "syntara-88cc3",
   storageBucket: "syntara-88cc3.appspot.com",
