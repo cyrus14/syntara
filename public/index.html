@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Syntara</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+  <!-- Navbar -->
+  <nav class="bg-white shadow">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+      <a href="#" class="text-xl font-bold text-gray-800">Syntara</a>
+      <div class="flex items-center">
+        <!-- Welcome Message (Optional) -->
+        <span id="welcome-message" class="text-gray-800 mr-4"></span>
+        <!-- Google Sign-In Button -->
+        <button id="google-signin-btn" class="bg-red-500 text-white px-4 py-2 rounded mr-4">
+          Sign In with Google
+        </button>
+        <!-- Profile Picture -->
+        <img id="profile-pic" class="w-10 h-10 rounded-full hidden cursor-pointer" src="" alt="Profile Picture">
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container mx-auto px-4 py-8">
+    <!-- Search Bar -->
+    <div class="mb-8">
+      <h2 class="text-2xl font-bold mb-4">Search Model Insights</h2>
+      <div class="flex">
+        <input type="text" id="search-input" class="w-full p-2 border border-gray-300 rounded-l" placeholder="Search for models...">
+        <button id="search-btn" class="bg-blue-600 text-white px-4 py-2 rounded-r">Search</button>
+      </div>
+    </div>
+
+    <!-- Upload Data (Hidden until user logs in) -->
+    <div id="upload-section" class="hidden">
+      <h2 class="text-2xl font-bold mb-4">Securely Upload Hospital Data</h2>
+      <div class="bg-white p-6 rounded shadow">
+        <input type="file" id="file-input" class="mb-4">
+        <button id="upload-btn" class="bg-blue-600 text-white px-4 py-2 rounded">Upload</button>
+        <!-- Progress Bar -->
+        <div id="progress-container" class="w-full bg-gray-200 rounded-full h-2.5 mt-4 hidden overflow-hidden">
+          <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%; transition: width 0.1s;"></div>
+        </div>
+        <!-- Feedback Message -->
+        <div id="feedback-message" class="mt-4 text-green-600 font-semibold" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Include your app.js script -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>
