@@ -8,13 +8,13 @@
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-100 min-h-screen flex flex-col">
   <!-- Navbar -->
   <nav class="bg-white shadow">
     <div class="container mx-auto px-4 py-4 flex justify-between items-center">
       <div class="flex items-center">
         <!-- Logo Image -->
-        <img src="assets/images/logo.png" alt="Syntara Logo" class="h-16 w-16 mr-2"> <!-- Adjust size with h-8 w-8 -->
+        <img src="assets/images/logo.png" alt="Syntara Logo" class="h-16 w-16 mr-2">
         <!-- Product Title -->
         <a href="#" class="text-xl font-bold text-gray-800">Syntara</a>
       </div>
@@ -22,53 +22,86 @@
         <!-- Welcome Message (Optional) -->
         <span id="welcome-message" class="text-gray-800 mr-4"></span>
         <!-- Google Sign-In Button -->
-        <button id="google-signin-btn" class="bg-red-500 text-white px-4 py-2 rounded mr-4">
-          Sign In with Google
-        </button>
+        <button id="google-signin-btn" class="bg-gray-500 text-white px-4 py-2 rounded mr-4">Sign In</button>
         <!-- Profile Picture -->
         <img id="profile-pic" class="w-10 h-10 rounded-full hidden cursor-pointer" src="" alt="Profile Picture">
+        <!-- Admin Badge -->
+        <span id="admin-badge" class="bg-blue-500 text-white px-2 py-1 rounded-full hidden ml-2">Contributor</span>
       </div>
     </div>
   </nav>
 
-  <!-- Main Content -->
-  <div class="container mx-auto px-4 py-8">
-    <!-- Search Bar -->
-    <div class="mb-8">
-      <h2 class="text-2xl font-bold mb-4">Search Model Insights</h2>
-      <div class="flex">
-        <input type="text" id="search-input" class="w-full p-2 border border-gray-300 rounded-l" placeholder="Search for models...">
-        <button id="search-btn" class="bg-blue-600 text-white px-4 py-2 rounded-r">Search</button>
+  <!-- Main Content Wrapper -->
+  <div class="flex-grow">
+    <!-- Welcome Section -->
+    <div id="welcome-section" class="container mx-auto px-4 py-12">
+      <div class="text-center p-6 max-w-3xl mx-auto bg-white shadow-lg rounded-lg">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">Unlock the Power of Healthcare Data</h1>
+        <p class="text-lg text-gray-600 mb-8">
+          The volume of healthcare data is one of the fastest growing types of data, yet 97% goes unused due to privacy concerns. 
+          Syntara helps researchers and healthcare providers securely access and analyze valuable insights 
+          without violating HIPAA, thanks to our privacy-focused federated data network.
+        </p>
+        <a href="#" id="get-started-btn" class="bg-blue-600 text-white text-lg font-semibold px-6 py-3 rounded-full shadow-md hover:bg-blue-700 transition duration-300">
+          Sign In to Get Started
+        </a>
       </div>
     </div>
 
-    <!-- Upload Data (Hidden until user logs in) -->
-    <div id="upload-section" class="hidden">
-      <h2 class="text-2xl font-bold mb-4">Securely Upload Hospital Data</h2>
-      <div class="bg-white p-6 rounded shadow">
-        <!-- File Input -->
-        <input type="file" id="file-input" class="mb-4">
-        <!-- Dropdown for Folder Selection -->
-        <label for="folder-select" class="block mb-2 font-semibold">Select Folder:</label>
-        <select id="folder-select" class="w-full p-2 border border-gray-300 rounded mb-4">
-          <option value="ALSData">Amyotrophic Lateral Sclerosis (ALS) Data</option>
-          <option value="FOPData">Fibrodysplasia Ossificans Progressiva (FOP) Data</option>
-          <option value="GaucherData">Gaucher Disease Data</option>
-          <option value="KawasakiData">Kawasaki Disease Data</option>
-          <option value="NiemannData">Niemann-Pick Disease Data</option>
-          
-        </select>
-        <!-- Upload Button -->
-        <button id="upload-btn" class="bg-blue-600 text-white px-4 py-2 rounded">Upload</button>
-        <!-- Progress Bar -->
-        <div id="progress-container" class="w-full bg-gray-200 rounded-full h-2.5 mt-4 hidden overflow-hidden">
-          <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%; transition: width 0.1s;"></div>
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+      <!-- Search Bar -->
+      <div id="search-section" class="mb-8 hidden">
+        <h2 class="text-2xl font-bold mb-4">Search Model Insights</h2>
+        <div class="flex">
+          <input type="text" id="search-input" class="w-full p-2 border border-gray-300 rounded-l" placeholder="Search for models...">
+          <button id="search-btn" class="bg-blue-600 text-white px-4 py-2 rounded-r">Search</button>
         </div>
-        <!-- Feedback Message -->
-        <div id="feedback-message" class="mt-4 text-green-600 font-semibold" aria-live="polite"></div>
+      </div>
+
+      <!-- Upload Data (Hidden until user logs in) -->
+      <div id="upload-section" class="hidden">
+        <h2 class="text-2xl font-bold mb-4">Securely Upload Hospital Data</h2>
+        <div class="bg-white p-6 rounded shadow">
+          <!-- File Input -->
+          <input type="file" id="file-input" class="mb-4">
+          <!-- Dropdown for Folder Selection -->
+          <label for="folder-select" class="block mb-2 font-semibold">Select Folder:</label>
+          <select id="folder-select" class="w-full p-2 border border-gray-300 rounded mb-4">
+            <option value="ALSData">Amyotrophic Lateral Sclerosis (ALS) Data</option>
+            <option value="FOPData">Fibrodysplasia Ossificans Progressiva (FOP) Data</option>
+            <option value="GaucherData">Gaucher Disease Data</option>
+            <option value="KawasakiData">Kawasaki Disease Data</option>
+            <option value="NiemannData">Niemann-Pick Disease Data</option>
+          </select>
+          <!-- Upload Button -->
+          <button id="upload-btn" class="bg-blue-600 text-white px-4 py-2 rounded">Upload</button>
+          <!-- Progress Bar -->
+          <div id="progress-container" class="w-full bg-gray-200 rounded-full h-2.5 mt-4 hidden overflow-hidden">
+            <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%; transition: width 0.1s;"></div>
+          </div>
+          <!-- Feedback Message -->
+          <div id="feedback-message" class="mt-4 text-green-600 font-semibold" aria-live="polite"></div>
+        </div>
       </div>
     </div>
   </div>
+
+  <!-- Footer Section with Privacy, Encryption, HIPAA Compliance -->
+  <footer class="bg-white py-4 shadow-inner">
+    <div class="container mx-auto text-center">
+      <div class="flex justify-center items-center space-x-4">
+        <span class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Privacy</span>
+        <span class="mx-2">•</span>
+        <span class="text-sm font-semibold text-gray-500 uppercase tracking-wider">Encryption</span>
+        <span class="mx-2">•</span>
+        <span class="text-sm font-semibold text-gray-500 uppercase tracking-wider">HIPAA Compliance</span>
+      </div>
+      <p class="text-sm text-gray-500 mt-2">
+        By leveraging advanced encryption techniques, Syntara ensures secure data sharing and analysis without any risk of violating patient privacy or HIPAA.
+      </p>
+    </div>
+  </footer>
 
   <!-- Include your app.js script -->
   <script type="module" src="app.js"></script>

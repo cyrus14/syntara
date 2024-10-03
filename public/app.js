@@ -45,6 +45,12 @@ const progressContainer = document.getElementById('progress-container');
 const progressBar = document.getElementById('progress-bar');
 const feedbackMessage = document.getElementById('feedback-message');
 const uploadSection = document.getElementById('upload-section'); // Reference to the upload section
+const adminBadge = document.getElementById('admin-badge');
+const searchSection = document.getElementById('search-section'); // Reference to the search section
+const welcomeSection = document.getElementById('welcome-section'); // Reference to the welcome section
+const getStartedBtn = document.getElementById('get-started-btn');
+
+const ADMIN_LIST = ['cri23@cornell.edu'];
 
 // Handle Authentication State Changes
 onAuthStateChanged(auth, (user) => {
@@ -52,29 +58,55 @@ onAuthStateChanged(auth, (user) => {
     // User is signed in
     googleSignInBtn.classList.add('hidden');
     profilePic.classList.remove('hidden');
-    uploadSection.classList.remove('hidden'); // Show the upload section
+    searchSection.classList.remove('hidden'); // Show the search section
+    welcomeSection.classList.add('hidden'); // Hide the welcome section
 
     // Update profile picture
     profilePic.src = user.photoURL;
 
     // Display welcome message (optional)
     welcomeMessage.textContent = `Welcome, ${user.displayName}`;
+
+    // Check if the user's email is in the ADMIT_LIST
+    if (ADMIN_LIST.includes(user.email)) {
+      adminBadge.classList.remove('hidden'); // Show the admin badge
+      uploadSection.classList.remove('hidden'); // Show the upload section
+    } else {
+      adminBadge.classList.add('hidden'); // Hide the admin badge
+      uploadSection
+    }
+
   } else {
     // User is signed out
     googleSignInBtn.classList.remove('hidden');
     profilePic.classList.add('hidden');
     uploadSection.classList.add('hidden'); // Hide the upload section
+    searchSection.classList.add('hidden'); // Hide the search section
+    welcomeSection.classList.remove('hidden'); // Show the welcome section
 
     // Clear profile picture
     profilePic.src = '';
 
     // Clear welcome message
     welcomeMessage.textContent = '';
+
+    adminBadge.classList.add('hidden'); // Hide the admin badge
   }
 });
 
 // Google Sign-In Functionality
 googleSignInBtn.addEventListener('click', () => {
+  signInWithPopup(auth, provider)
+    .then((result) => {
+      // User signed in successfully
+      // UI updates are handled by onAuthStateChanged observer
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+});
+
+getStartedBtn.addEventListener('click', () => {
   signInWithPopup(auth, provider)
     .then((result) => {
       // User signed in successfully
