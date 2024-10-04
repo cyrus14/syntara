@@ -160,7 +160,7 @@ const welcomeSection = document.getElementById('welcome-section'); // Reference 
 const getStartedBtn = document.getElementById('get-started-btn');
 const combineCSVBtn = document.getElementById('combine-csv-btn');
 
-const ADMIN_LIST = ['cri23@cornell.edu'];
+const ADMIN_LIST = ['cri23@cornell.edu', 'rvv6@cornell.edu', "rcs353@cornell.edu", "asl256@cornell.edu"]; // List of admin emails
 
 // Handle Authentication State Changes
 onAuthStateChanged(auth, (user) => {
