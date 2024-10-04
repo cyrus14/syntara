@@ -34,13 +34,29 @@
           >
             Sign In
           </button>
-          <!-- Profile Picture -->
-          <img
-            id="profile-pic"
-            class="w-10 h-10 rounded-full hidden cursor-pointer"
-            src=""
-            alt="Profile Picture"
-          />
+          <div class="relative">
+            <!-- Profile Picture -->
+            <img
+              id="profile-pic"
+              class="w-10 h-10 rounded-full hidden cursor-pointer"
+              src=""
+              alt="Profile Picture"
+            />
+          
+            <!-- Dropdown for Log Out -->
+            <div
+              id="logout-dropdown"
+              class="absolute right-0 mt-2 w-32 bg-white border border-gray-300 rounded-md shadow-lg hidden"
+            >
+              <button
+                id="logout-btn"
+                class="block w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200"
+              >
+                Log Out
+              </button>
+            </div>
+          </div>
+          
           <!-- Admin Badge -->
           <span
             id="admin-badge"

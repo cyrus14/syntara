@@ -206,6 +206,36 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
+// Get the profile picture and logout dropdown elements
+const logoutDropdown = document.getElementById("logout-dropdown");
+const logoutBtn = document.getElementById("logout-btn");
+
+// Toggle dropdown visibility when the profile picture is clicked
+profilePic.addEventListener("click", () => {
+  logoutDropdown.classList.toggle("hidden"); // Show/hide the dropdown
+});
+
+// Logout functionality when the "Log Out" button is clicked
+logoutBtn.addEventListener("click", () => {
+  signOut(auth)
+    .then(() => {
+      // User signed out successfully
+      logoutDropdown.classList.add("hidden"); // Hide the dropdown after logging out
+      console.log("User signed out successfully");
+    })
+    .catch((error) => {
+      console.error("Error signing out:", error);
+    });
+});
+
+// Hide the dropdown if clicked outside of it
+document.addEventListener("click", (event) => {
+  if (!profilePic.contains(event.target) && !logoutDropdown.contains(event.target)) {
+    logoutDropdown.classList.add("hidden"); // Hide the dropdown if clicked outside
+  }
+});
+
+
 // Google Sign-In Functionality
 googleSignInBtn.addEventListener("click", () => {
   signInWithPopup(auth, provider)
@@ -222,18 +252,6 @@ getStartedBtn.addEventListener("click", () => {
   signInWithPopup(auth, provider)
     .then((result) => {
       // User signed in successfully
-      // UI updates are handled by onAuthStateChanged observer
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-});
-
-// Logout Functionality via Profile Picture Click
-profilePic.addEventListener("click", () => {
-  signOut(auth)
-    .then(() => {
-      // User signed out successfully
       // UI updates are handled by onAuthStateChanged observer
     })
     .catch((error) => {
