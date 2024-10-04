@@ -141,10 +141,10 @@ uploadBtn.addEventListener('click', () => {
   }
 
   // Optional: Implement file type and size checks here
-  const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+  const allowedTypes = ['text/csv'];
   const maxSize = 5 * 1024 * 1024; // 5 MB
   if (!allowedTypes.includes(file.type)) {
-    feedbackMessage.textContent = 'Invalid file type. Only JPEG, PNG, and PDF files are allowed.';
+    feedbackMessage.textContent = 'Invalid file type. Only .csv files are allowed.';
     feedbackMessage.classList.add('text-red-600');
     return;
   }
