@@ -8,11 +8,120 @@ import {
   signOut,
   onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+
 import {
   getStorage,
   ref,
-  uploadBytesResumable,
+  listAll,
+  getDownloadURL
 } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js";
+
+// Function to get CSV files from a folder and combine them into a dictionary
+async function fetchAndCombineCSVFiles(folderName) {
+  const folderRef = ref(storage, folderName); // Reference to the folder
+  const fileList = await listAll(folderRef); // List all files in the folder
+
+  let combinedData = {}; // Dictionary to store combined data
+
+  for (let itemRef of fileList.items) {
+    const fileUrl = await getDownloadURL(itemRef); // Get download URL for each file
+    const fileResponse = await fetch(fileUrl); // Fetch the file contents
+    const csvText = await fileResponse.text(); // Read CSV content as text
+    const parsedData = parseCSV(csvText); // Parse CSV content
+    combinedData = { ...combinedData, ...parsedData }; // Combine parsed data
+  }
+
+  return combinedData;
+}
+
+// CSV parser function (basic)
+function parseCSV(csvText) {
+  const rows = csvText.split('\n');
+  const header = rows[0].split(',');
+  const data = {};
+
+  for (let i = 1; i < rows.length; i++) {
+    const values = rows[i].split(',');
+    const entry = {};
+    header.forEach((key, index) => {
+      entry[key] = values[index];
+    });
+    data[i - 1] = entry; // Add row data to dictionary
+  }
+
+  return data;
+}
+
+// Example usage: Fetching and combining CSV files from the ALSData folder
+fetchAndCombineCSVFiles('ALSData').then(combinedData => {
+  console.log('Combined Data:', combinedData);
+}).catch(error => {
+  console.error('Error fetching CSV files:', error);
+});
+
+// Function to get file names from the Models folder
+async function getFilesFromModelsFolder() {
+  const modelsFolderRef = ref(storage, 'Models'); // Reference to the Models folder
+
+  try {
+    const result = await listAll(modelsFolderRef);
+    const fileNames = result.items.map(itemRef => itemRef.name); // Get the names of the files
+    return fileNames; // Return the file names as an array
+  } catch (error) {
+    console.error("Error listing files:", error);
+    return [];
+  }
+}
+
+// UI Elements for search
+const searchInput = document.getElementById('search-input'); // Search input field
+const searchResults = document.createElement('div'); // Element for showing search results
+searchResults.classList.add('absolute', 'bg-white', 'border', 'w-full', 'mt-10', 'z-10');
+
+// Insert searchResults into DOM after the searchInput field
+searchInput.parentNode.appendChild(searchResults);
+
+// Event listener for search input
+searchInput.addEventListener('input', async () => {
+  const query = searchInput.value.toLowerCase();
+
+  // If the search input is empty, clear the results and hide the dropdown
+  if (query === '') {
+    searchResults.innerHTML = '';
+    searchResults.classList.add('hidden');
+    return; // Exit early if no query
+  }
+
+  const fileNames = await getFilesFromModelsFolder(); // Get file names from Firebase Storage
+  const filteredFiles = fileNames.filter(file => file.toLowerCase().includes(query)); // Filter the results based on user input
+
+  // Clear previous search results
+  searchResults.innerHTML = '';
+
+  // Populate the search results dropdown
+  filteredFiles.forEach(fileName => {
+    const resultItem = document.createElement('div');
+    resultItem.classList.add('search-result-item', 'p-2', 'cursor-pointer'); // Add some styling
+    resultItem.textContent = fileName.replace('.jpg', ''); // Display name without extension
+    searchResults.appendChild(resultItem);
+
+    // Handle click on a result
+    resultItem.addEventListener('click', () => {
+      searchInput.value = fileName.replace('.jpg', ''); // Set the search input to the selected file name
+      searchResults.innerHTML = ''; // Clear the results list
+    });
+  });
+
+  // If there are no results, hide the search results container
+  if (filteredFiles.length === 0) {
+    searchResults.classList.add('hidden');
+  } else {
+    searchResults.classList.remove('hidden');
+  }
+});
+
+
+
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -49,6 +158,7 @@ const adminBadge = document.getElementById('admin-badge');
 const searchSection = document.getElementById('search-section'); // Reference to the search section
 const welcomeSection = document.getElementById('welcome-section'); // Reference to the welcome section
 const getStartedBtn = document.getElementById('get-started-btn');
+const combineCSVBtn = document.getElementById('combine-csv-btn');
 
 const ADMIN_LIST = ['cri23@cornell.edu'];
 
