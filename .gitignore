@@ -69,3 +69,5 @@ node_modules/
 .dataconnect
 
 /public/config.js
+
+backend/__pycache__/
