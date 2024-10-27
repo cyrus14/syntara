@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-from concrete import fhe
 from concrete.ml.deployment import FHEModelClient, FHEModelDev, FHEModelServer
 from concrete.ml.sklearn import SGDClassifier
 from sklearn.preprocessing import LabelEncoder
