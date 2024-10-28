@@ -2,14 +2,21 @@ import logging
 import joblib
 import sqlite3
 import io
+import os
 from sklearn.datasets import make_classification
 
 logging.basicConfig(level=logging.INFO)
 
+DB_DIR = os.path.join(os.path.dirname(__file__), 'database')
+os.makedirs(DB_DIR, exist_ok=True)
+
 
 def load_model_from_db(db_file: str, model_name: str):
+    db_filepath = os.path.join(DB_DIR, db_file)
+
     try:
-        with sqlite3.connect(db_file) as conn:
+        # Connect to database and retrieve model
+        with sqlite3.connect(db_filepath) as conn:
             cursor = conn.cursor()
             cursor.execute(
                 "SELECT model FROM models WHERE name = ?", (model_name,))
@@ -38,12 +45,15 @@ def refit_model(model, X_new, y_new):
 
 
 def save_refitted_model_to_db(model, db_file: str, model_name: str):
+    db_filepath = os.path.join(DB_DIR, db_file)
+
     try:
+        # Serialize model to binary and store in database
         model_data = io.BytesIO()
         joblib.dump(model, model_data)
         model_data.seek(0)
 
-        with sqlite3.connect(db_file) as conn:
+        with sqlite3.connect(db_filepath) as conn:
             cursor = conn.cursor()
             cursor.execute("UPDATE models SET model = ? WHERE name = ?",
                            (model_data.read(), model_name))
@@ -55,6 +65,7 @@ def save_refitted_model_to_db(model, db_file: str, model_name: str):
 
 # Sample Execution
 model = load_model_from_db('models.db', 'logistic_model')
+print(model)
 # if model:
 #     X_new, y_new = make_classification(
 #         n_samples=50, n_features=4, n_classes=3, n_informative=3, random_state=42)
