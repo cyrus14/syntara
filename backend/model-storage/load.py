@@ -39,7 +39,6 @@ def refit_model(model, X_new, y_new):
 
 def save_refitted_model_to_db(model, db_file: str, model_name: str):
     try:
-        # Serialize model to binary and store in database
         model_data = io.BytesIO()
         joblib.dump(model, model_data)
         model_data.seek(0)
@@ -56,3 +55,9 @@ def save_refitted_model_to_db(model, db_file: str, model_name: str):
 
 # Sample Execution
 model = load_model_from_db('models.db', 'logistic_model')
+# if model:
+#     X_new, y_new = make_classification(
+#         n_samples=50, n_features=4, n_classes=3, n_informative=3, random_state=42)
+#     model = refit_model(model, X_new, y_new)
+#     if model:
+#         save_refitted_model_to_db(model, 'models.db', 'logistic_model')
