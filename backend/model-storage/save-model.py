@@ -1,6 +1,4 @@
-from sklearn.linear_model import LogisticRegression
 from sklearn.datasets import load_iris
-from regression import model
 import joblib
 import logging
 import importlib
@@ -8,7 +6,7 @@ import os
 
 logging.basicConfig(level=logging.INFO)
 
-MODELS_DIR = os.path.join(os.path.dirname(__file__), 'models')
+MODELS_DIR = os.path.join(os.path.dirname(__file__), 'models-jobfiles')
 os.makedirs(MODELS_DIR, exist_ok=True)
 
 
@@ -34,4 +32,4 @@ def train_and_save_model(model_filename, saved_model_filename: str):
 
 
 # Test with saving to 'logistic_model.joblib'
-train_and_save_model('regression', 'logistic_model.joblib')
+train_and_save_model('models.regression', 'logistic_model.joblib')

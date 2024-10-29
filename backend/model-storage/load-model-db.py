@@ -3,7 +3,6 @@ import joblib
 import sqlite3
 import io
 import os
-from sklearn.datasets import make_classification
 
 logging.basicConfig(level=logging.INFO)
 

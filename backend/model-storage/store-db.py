@@ -5,7 +5,7 @@ import os
 logging.basicConfig(level=logging.INFO)
 
 DB_DIR = os.path.join(os.path.dirname(__file__), 'database')
-MODELS_DIR = os.path.join(os.path.dirname(__file__), 'models')
+MODELS_DIR = os.path.join(os.path.dirname(__file__), 'models-jobfiles')
 os.makedirs(DB_DIR, exist_ok=True)
 os.makedirs(MODELS_DIR, exist_ok=True)
 
