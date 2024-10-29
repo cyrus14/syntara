@@ -70,4 +70,4 @@ node_modules/
 
 /public/config.js
 
-backend/__pycache__/
+**/__pycache__/
