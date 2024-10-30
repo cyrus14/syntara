@@ -38,5 +38,29 @@ def upload_csv():
         print(f"Exception occurred: {e}")
         return jsonify({"error": str(e)}), 500
 
+@app.route('/predict', methods=['POST'])
+def predict():
+    condition = request.form.get("condition")
+    if not condition:
+        return jsonify({"error": "Condition not selected"}), 400
+
+    if 'file' not in request.files:
+        return jsonify({"error": "No file part"}), 400
+    file = request.files['file']
+
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+    if not file.filename.endswith('.csv'):
+        return jsonify({"error": "Only CSV files are allowed"}), 400
+
+    csv_data = file.read().decode("utf-8")
+    csv_data_io = StringIO(csv_data)
+    data_frame = pd.read_csv(csv_data_io)
+
+    ## CALL PREDICTIONS FUNCTION FROM BACKEND
+    predictions = "dummy predictions"
+
+    return jsonify({"predictions": predictions}), 200
+
 if __name__ == '__main__':
     app.run(debug=True, port=8000)

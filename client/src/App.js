@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar";
 import WelcomeSection from "./components/WelcomeSection";
 import SearchSection from "./components/SearchSection";
 import UploadSection from "./components/UploadSection";
+import PredictSection from "./components/PredictSection";
 import Footer from "./components/Footer";
 import { auth, provider, signInWithPopup, signOut } from "./firebase";
 
@@ -46,6 +47,7 @@ function App() {
           <>
             <SearchSection />
             <UploadSection />
+            <PredictSection />
           </>
         ) : (
           <WelcomeSection onSignIn={handleSignIn} />
