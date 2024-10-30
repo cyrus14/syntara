@@ -6,6 +6,8 @@ Syntara is a platform that helps researchers and healthcare providers securely a
 
 ## How to start project:
 
+- Install all python packages in backend/requirements.txt
+- Run `python backend/api.py`
 - In client, run `npm i` to download required packages.
 - Add file firebase.config.js in client/src and paste in firebaseconfig file
 - Run `npm start`
