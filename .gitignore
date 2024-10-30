@@ -77,3 +77,10 @@ node_modules/
 **/.ipynb_checkpoints
 
 firebase-key.json
+/backend/venv
+
+**/.artifacts
+
+**/.ipynb_checkpoints
+
+firebase-key.json
