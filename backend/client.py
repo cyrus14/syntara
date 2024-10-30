@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
-from concrete.ml.deployment import FHEModelClient, FHEModelDev, FHEModelServer
-from concrete.ml.sklearn import SGDClassifier
-from sklearn.preprocessing import LabelEncoder
+# from concrete.ml.deployment import FHEModelClient, FHEModelDev, FHEModelServer
+# from concrete.ml.sklearn import SGDClassifier
+# from sklearn.preprocessing import LabelEncoder
 
 
 class Client:
@@ -12,8 +12,8 @@ class Client:
     def __preprocess_data(self, data):
         return data
     
-    def upload_data(self, condition, csv_path):
-        data = self.__preprocess_data(pd.read_csv(csv_path))
+    def upload_data(self, condition, data_frame):
+        data = self.__preprocess_data(data_frame)
         self.data[condition] = data
 
     def send_encrypted_data(self, condition):
