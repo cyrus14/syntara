@@ -1,39 +1,29 @@
-import os
 import io
 import joblib
 import logging
 import firebase_admin
-from firebase_admin import credentials, storage
+from firebase_admin import storage
 from initialize_firebase import initialize_firebase
-from sklearn.linear_model import LogisticRegression
-from sklearn.datasets import load_iris
+from sample_model import pretrained_model
 
 logging.basicConfig(level=logging.INFO)
 
 
-def train_and_save_model(model_name):
+def save_model_to_firebase(model, model_name):
     try:
-        # Train a sample model
-        data = load_iris()
-        X, y = data.data, data.target
-        model = LogisticRegression(max_iter=1000)
-        model.fit(X, y)
-
         # Serialize model to an in-memory byte stream
         model_stream = io.BytesIO()
         joblib.dump(model, model_stream)
-        model_stream.seek(0)  # Reset the stream position to the beginning
+        model_stream.seek(0)
 
-        # Upload the model to Firebase Cloud Storage
         bucket = storage.bucket()
         blob = bucket.blob(model_name)
         blob.upload_from_file(
             model_stream, content_type="application/octet-stream")
         logging.info(f"Model {model_name} uploaded to Firebase Storage.")
-
     except Exception as e:
-        logging.error(f"Error training or uploading model: {e}")
+        logging.error(f"Error uploading model to Firebase: {e}")
 
 
 initialize_firebase()
-train_and_save_model('logistic_model_v2.joblib')
+save_model_to_firebase(pretrained_model, 'sample_model.joblib')
