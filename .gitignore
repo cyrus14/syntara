@@ -71,3 +71,8 @@ node_modules/
 /public/config.js
 
 **/__pycache__/
+
+**/.artifacts
+
+**/.ipynb_checkpoints
+
