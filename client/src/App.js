@@ -1,28 +1,23 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
-import WelcomeSection from "./components/WelcomeSection";
-import SearchSection from "./components/SearchSection";
 import UploadSection from "./components/UploadSection";
+import SearchSection from "./components/SearchSection";
 import PredictSection from "./components/PredictSection";
+import DataVisualization from "./components/DataVisualization";
 import Footer from "./components/Footer";
 import { auth, provider, signInWithPopup, signOut } from "./firebase";
 
-import "./App.css";
-
 function App() {
   const [user, setUser] = useState(null);
+  const [activeTab, setActiveTab] = useState("upload");
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        setUser(user);
-      } else {
-        setUser(null);
-      }
+      setUser(user || null);
     });
-
     return () => unsubscribe();
   }, []);
+
   const handleSignIn = async () => {
     try {
       await signInWithPopup(auth, provider);
@@ -41,17 +36,22 @@ function App() {
 
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col">
-      <Navbar user={user} onSignIn={handleSignIn} onSignOut={handleSignOut} />
+      <Navbar
+        user={user}
+        onSignIn={handleSignIn}
+        onSignOut={handleSignOut}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
       <div className="flex-grow">
-        {user ? (
+        {activeTab === "upload" && (
           <>
             <SearchSection />
             <UploadSection />
             <PredictSection />
           </>
-        ) : (
-          <WelcomeSection onSignIn={handleSignIn} />
         )}
+        {activeTab === "visualization" && <DataVisualization />}
       </div>
       <Footer />
     </div>
