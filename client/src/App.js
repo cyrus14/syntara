@@ -4,6 +4,7 @@ import UploadSection from "./components/UploadSection";
 import SearchSection from "./components/SearchSection";
 import PredictSection from "./components/PredictSection";
 import DataVisualization from "./components/DataVisualization";
+import WelcomeSection from "./components/WelcomeSection";
 import Footer from "./components/Footer";
 import { auth, provider, signInWithPopup, signOut } from "./firebase";
 
@@ -44,14 +45,20 @@ function App() {
         setActiveTab={setActiveTab}
       />
       <div className="flex-grow">
-        {activeTab === "upload" && (
+        {user ? (
           <>
-            <SearchSection />
-            <UploadSection />
-            <PredictSection />
+            {activeTab === "upload" && (
+              <>
+                <SearchSection />
+                <UploadSection />
+                <PredictSection />
+              </>
+            )}
+            {activeTab === "visualization" && <DataVisualization />}
           </>
+        ) : (
+          <WelcomeSection onSignIn={handleSignIn} />
         )}
-        {activeTab === "visualization" && <DataVisualization />}
       </div>
       <Footer />
     </div>
