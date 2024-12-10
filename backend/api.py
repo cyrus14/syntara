@@ -63,5 +63,16 @@ def predict():
     predictions = s.predict_data(condition, data_frame)
     return jsonify({"predictions": predictions}), 200
 
+@app.route("/data-visualization", methods=["GET"])
+def data_visualization():
+
+    # Replace with actual data-fetching logic
+    # Data should be dictionary with same formmat as the mock_data
+    mock_data = {
+        "dates": ["2024-10-01", "2024-10-02", "2024-10-03", "2024-10-04"],
+        "values": [100, 200, 150, 300],
+    }
+    return jsonify(mock_data)
+
 if __name__ == '__main__':
     app.run(debug=False, port=8000, threaded=False)
