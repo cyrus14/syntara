@@ -4,7 +4,6 @@ import logging
 import firebase_admin
 from firebase_admin import storage
 from initialize_firebase import initialize_firebase
-from sample_model import pretrained_model
 
 logging.basicConfig(level=logging.INFO)
 
@@ -24,6 +23,3 @@ def save_model_to_firebase(model, model_name):
     except Exception as e:
         logging.error(f"Error uploading model to Firebase: {e}")
 
-
-initialize_firebase()
-save_model_to_firebase(pretrained_model, 'sample_model.joblib')

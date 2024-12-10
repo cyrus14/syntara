@@ -10,6 +10,7 @@ class Client:
         self.data = {}
 
     def __preprocess_data(self, data):
+        
         return data
     
     def upload_data(self, condition, data_frame):

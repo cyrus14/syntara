@@ -22,9 +22,3 @@ def load_model_from_firebase(model_name):
     except Exception as e:
         logging.error(f"Error loading model from Firebase: {e}")
         return None
-
-
-# Initialize Firebase and load the model
-initialize_firebase()
-model = load_model_from_firebase('sample_model.joblib')
-print(model)
