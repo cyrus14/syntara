@@ -19,16 +19,6 @@ function Navbar({ user, onSignIn, onSignOut, activeTab, setActiveTab }) {
           >
             Upload Data
           </button>
-          <button
-            className={`text-lg font-semibold ${
-              activeTab === "visualization"
-                ? "text-blue-600 border-b-2 border-blue-600"
-                : "text-gray-700"
-            }`}
-            onClick={() => setActiveTab("visualization")}
-          >
-            Data Visualization
-          </button>
         </div>
 
         <div className="flex items-center">

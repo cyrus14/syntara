@@ -3,7 +3,6 @@ import Navbar from "./components/Navbar";
 import UploadSection from "./components/UploadSection";
 import SearchSection from "./components/SearchSection";
 import PredictSection from "./components/PredictSection";
-import DataVisualization from "./components/DataVisualization";
 import WelcomeSection from "./components/WelcomeSection";
 import Footer from "./components/Footer";
 import { auth, provider, signInWithPopup, signOut } from "./firebase";
@@ -54,7 +53,6 @@ function App() {
                 <PredictSection />
               </>
             )}
-            {activeTab === "visualization" && <DataVisualization />}
           </>
         ) : (
           <WelcomeSection onSignIn={handleSignIn} />
