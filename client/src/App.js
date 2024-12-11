@@ -6,6 +6,7 @@ import WelcomeSection from "./components/WelcomeSection";
 import AboutSection from "./components/AboutSection";
 import Footer from "./components/Footer";
 import { auth, provider, signInWithPopup, signOut } from "./firebase";
+import PredictSection from "./components/PredictSection";
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
           // Check if the user's email is in the admin email list
           const isAdminUser = adminEmailsJson.adminEmails.includes(user.email);
           setIsAdmin(isAdminUser);
+          console.log("isAdminUser", isAdminUser);
         } catch (error) {
           console.error("Error checking admin email:", error);
         }
@@ -68,9 +70,11 @@ function App() {
                   activeTab={activeTab}
                   setActiveTab={setActiveTab}
                 />
+
+                <SearchSection />
                 {isAdmin &&
-                <SearchSection /> }
-                <UploadAndPredictSection />
+                <UploadAndPredictSection />}
+                {!isAdmin && ( <PredictSection />)}
               </>
             )}
           </>

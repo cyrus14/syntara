@@ -3,7 +3,6 @@ from tempfile import TemporaryDirectory
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-from concrete import fhe
 from concrete.ml.sklearn import SGDClassifier
 from concrete.compiler import check_gpu_available
 from sklearn.model_selection import train_test_split
