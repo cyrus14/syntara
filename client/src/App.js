@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
-import WelcomeNavbar from "./components/WelcomeNavBar";
 import UploadSection from "./components/UploadSection";
 import SearchSection from "./components/SearchSection";
 import PredictSection from "./components/PredictSection";
@@ -12,7 +11,6 @@ import { auth, provider, signInWithPopup, signOut } from "./firebase";
 function App() {
   const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState("upload");
-  const [welcomeTab, setWelcomeTab] = useState("welcome");
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -59,17 +57,8 @@ function App() {
           </>
         ) : (
           <>
-            {" "}
-            <WelcomeNavbar
-              activeTab={welcomeTab}
-              setActiveTab={setWelcomeTab}
-            />
-            <div className="flex-grow">
-              {welcomeTab === "welcome" && (
-                <WelcomeSection onSignIn={handleSignIn} />
-              )}
-              {welcomeTab === "about" && <AboutSection />}
-            </div>
+            <WelcomeSection onSignIn={handleSignIn} />
+            <AboutSection />
           </>
         )}
       </div>
