@@ -1,4 +1,6 @@
 import React from "react";
+import './WelcomeSection.css';
+
 
 function WelcomeSection({ onSignIn }) {
   const handleScroll = () => {
@@ -35,7 +37,7 @@ function WelcomeSection({ onSignIn }) {
   };
 
   return (
-    <div className="h-screen bg-gradient-to-br from-blue-600 to-red-600 flex flex-col justify-center items-center relative text-white">
+    <div className="h-screen bg-gradient-to-br from-blue-600 to-red-600 flex flex-col justify-center items-center relative text-white gradient-background">
       <div className="text-center">
         <h1 className="text-5xl font-bold mb-4">
           Unlock the Power of Healthcare Data
