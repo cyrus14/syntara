@@ -18,6 +18,7 @@ import sys
 import os
 from load_fb_model import load_model_from_firebase
 from save_fb_model import save_model_to_firebase
+from datetime import datetime
 
 
 use_gpu_if_available = False
