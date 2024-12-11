@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
-import UploadSection from "./components/UploadSection";
+import UploadAndPredictSection from "./components/UploadAndPredictSection";
 import SearchSection from "./components/SearchSection";
-import PredictSection from "./components/PredictSection";
 import WelcomeSection from "./components/WelcomeSection";
 import AboutSection from "./components/AboutSection";
 import Footer from "./components/Footer";
@@ -50,8 +49,7 @@ function App() {
                   setActiveTab={setActiveTab}
                 />
                 <SearchSection />
-                <UploadSection />
-                <PredictSection />
+                <UploadAndPredictSection />
               </>
             )}
           </>

@@ -1,11 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { CONDITIONS } from "../constants";
 
-function UploadSection() {
+function UploadSection({isUploadLoading, setIsUploadLoading, isPredictLoading}) {
   const [file, setFile] = useState(null);
   const [selectedCondition, setSelectedCondition] = useState("");
   const [feedback, setFeedback] = useState("");
+  const [progress, setProgress] = useState(3);
+
+  useEffect(() => {
+    let intervalId;
+    if (isUploadLoading && progress < 95) {
+      // Increment progress slower: for example, every 1 second
+      intervalId = setInterval(() => {
+        setProgress((prevProgress) => {
+          const increment = Math.random();
+          return Math.min(prevProgress + increment, 95);
+        });
+      }, 6000);
+    }
+    return () => clearInterval(intervalId);
+  }, [isUploadLoading, progress]);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -24,6 +39,10 @@ function UploadSection() {
       return;
     }
 
+    setProgress(3);
+    setIsUploadLoading(true);
+    setFeedback("");
+
     const formData = new FormData();
     formData.append("file", file);
     formData.append("condition", selectedCondition);
@@ -38,12 +57,25 @@ function UploadSection() {
           },
         }
       );
-      setFeedback(response.data.message);
+
+      // Once we have the result, quickly move the bar to 100
+      setProgress(100);
+
+      // After a short delay to show completion, set the feedback and turn off loading
+      setTimeout(() => {
+        setIsUploadLoading(false);
+        setFeedback(response.data.message);
+      }, 500);
     } catch (error) {
       console.error("Error uploading file:", error.response || error.message);
-      setFeedback(
-        error.response?.data?.error || "Error uploading file. Please try again."
-      );
+      setProgress(100);
+      setTimeout(() => {
+        setIsUploadLoading(false);
+        setFeedback(
+          error.response?.data?.error ||
+            "Error uploading file. Please try again."
+        );
+      }, 500);
     }
   };
 
@@ -52,7 +84,6 @@ function UploadSection() {
       <h2 className="text-2xl font-bold mb-4">Securely Upload Hospital Data</h2>
       <input type="file" onChange={handleFileChange} className="mb-4" />
 
-      {/* Condition Dropdown with Options */}
       <label className="block mb-2 font-semibold">Select Condition:</label>
       <select
         value={selectedCondition}
@@ -63,22 +94,39 @@ function UploadSection() {
           Select a condition...
         </option>
         {CONDITIONS.map((condition) => (
-          <option value={condition}>{condition}</option>
+          <option key={condition} value={condition}>
+            {condition}
+          </option>
         ))}
       </select>
 
-      <button
-        onClick={handleUpload}
-        className="bg-blue-600 text-white px-4 py-2 rounded"
-      >
-        Upload
-      </button>
+      {/* Hide the Upload button while loading */}
+      {!isPredictLoading && !isUploadLoading && (
+        <button
+          onClick={handleUpload}
+          className="bg-blue-600 text-white px-4 py-2 rounded"
+        >
+          Upload
+        </button>
+      )}
+
+      {/* Loading Bar */}
+      {isUploadLoading && (
+        <div className="w-full bg-gray-200 rounded mt-4">
+          <div
+            className="bg-blue-600 text-xs font-medium text-white text-center p-0.5 leading-none rounded"
+            style={{ width: `${progress}%`, transition: "width 0.5s ease" }}
+          >
+            {Math.floor(progress)}%
+          </div>
+        </div>
+      )}
 
       {/* Feedback Message */}
-      {feedback && (
+      {feedback && !isUploadLoading && (
         <div
           className={`mt-4 font-semibold ${
-            feedback.includes("successfully")
+            feedback.toLowerCase().includes("success")
               ? "text-green-600"
               : "text-red-600"
           }`}
