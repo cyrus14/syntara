@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
+import WelcomeNavbar from "./components/WelcomeNavBar";
 import UploadSection from "./components/UploadSection";
 import SearchSection from "./components/SearchSection";
 import PredictSection from "./components/PredictSection";
 import WelcomeSection from "./components/WelcomeSection";
+import AboutSection from "./components/AboutSection";
 import Footer from "./components/Footer";
 import { auth, provider, signInWithPopup, signOut } from "./firebase";
 
 function App() {
   const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState("upload");
+  const [welcomeTab, setWelcomeTab] = useState("welcome");
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -36,18 +39,18 @@ function App() {
 
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col">
-      <Navbar
-        user={user}
-        onSignIn={handleSignIn}
-        onSignOut={handleSignOut}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-      />
       <div className="flex-grow">
         {user ? (
           <>
             {activeTab === "upload" && (
               <>
+                <Navbar
+                  user={user}
+                  onSignIn={handleSignIn}
+                  onSignOut={handleSignOut}
+                  activeTab={activeTab}
+                  setActiveTab={setActiveTab}
+                />
                 <SearchSection />
                 <UploadSection />
                 <PredictSection />
@@ -55,7 +58,19 @@ function App() {
             )}
           </>
         ) : (
-          <WelcomeSection onSignIn={handleSignIn} />
+          <>
+            {" "}
+            <WelcomeNavbar
+              activeTab={welcomeTab}
+              setActiveTab={setWelcomeTab}
+            />
+            <div className="flex-grow">
+              {welcomeTab === "welcome" && (
+                <WelcomeSection onSignIn={handleSignIn} />
+              )}
+              {welcomeTab === "about" && <AboutSection />}
+            </div>
+          </>
         )}
       </div>
       <Footer />
