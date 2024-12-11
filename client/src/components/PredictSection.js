@@ -7,6 +7,9 @@ function PredictSection() {
   const [selectedCondition, setSelectedCondition] = useState("");
   const [feedback, setFeedback] = useState("");
   const [predictionResult, setPredictionResult] = useState("");
+  const [progress, setProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -19,39 +22,40 @@ function PredictSection() {
     }
   };
 
-  const handlePrediction = async () => {
+  const handlePrediction = () => {
     if (!file || !selectedCondition) {
       setFeedback("Please select a file and a condition.");
       return;
     }
-
+  
+    setProgress(0); // Reset progress
+    setIsLoading(true); // Show loading bar
+  
     const formData = new FormData();
     formData.append("file", file);
     formData.append("condition", selectedCondition);
-
-    try {
-      const response = await axios.post(
-        "http://localhost:8000/predict",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      setPredictionResult(response.data.predictions);
-      setFeedback("Prediction completed successfully!");
-    } catch (error) {
-      console.error(
-        "Error during prediction:",
-        error.response || error.message
-      );
-      setFeedback(
-        error.response?.data?.error ||
-          "Error during prediction. Please try again."
-      );
-    }
+  
+    // Establish a connection to the server's progress updates
+    const eventSource = new EventSource("http://localhost:8000/predict");
+    eventSource.onmessage = (event) => {
+      if (event.data === "done") {
+        eventSource.close(); // Close the connection once processing is complete
+        setIsLoading(false);
+      } else if (!isNaN(event.data)) {
+        const progress = parseInt(event.data, 10);
+        setProgress(progress); // Update the progress bar
+      } else {
+        setPredictionResult(event.data); // Display predictions
+      }
+    };
+  
+    eventSource.onerror = () => {
+      setFeedback("Error during prediction. Please try again.");
+      setIsLoading(false); // Hide loading bar on error
+      eventSource.close(); // Ensure the connection is closed
+    };
   };
+  
 
   return (
     <div className="container mx-auto px-4 py-8 bg-white shadow-md rounded-lg mt-8">
