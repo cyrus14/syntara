@@ -68,15 +68,9 @@ function App() {
                   activeTab={activeTab}
                   setActiveTab={setActiveTab}
                 />
-<<<<<<< HEAD
                 {isAdmin &&
-                <SearchSection />}
-                <UploadSection />
-                <PredictSection />
-=======
-                <SearchSection />
+                <SearchSection /> }
                 <UploadAndPredictSection />
->>>>>>> 8b213d9280b0d23fe9d3b978a351f749ca978082
               </>
             )}
           </>

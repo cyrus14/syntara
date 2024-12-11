@@ -10,12 +10,6 @@ import firebase_admin
 from firebase_admin import credentials, firestore, storage
 app = Flask(__name__)
 
-# Initialize Firebase Admin SDK
-cred = credentials.Certificate("path/to/your/serviceAccountKey.json")
-firebase_admin.initialize_app(cred)
-db = firestore.client()
-
-app = Flask(__name__)
 CORS(app, origins="*")
 
 s = Server()
@@ -68,22 +62,8 @@ def predict():
     csv_data = file.read().decode("utf-8")
     csv_data_io = StringIO(csv_data)
     data_frame = pd.read_csv(csv_data_io)
-
-    # Generator to simulate progress and send updates
-    def generate():
-        steps = 10  # Simulated number of progress steps
-        for i in range(steps):
-            time.sleep(0.5)  # Simulate some processing delay
-            yield f"data:{int((i + 1) / steps * 100)}\n\n"  # Send progress as a percentage
-
-        # Perform the actual prediction
-        predictions = s.predict_data(condition, data_frame)
-
-        # Send the completion signal and predictions
-        yield f"data:done\n\n"
-        yield f"data:{predictions}\n\n"
-
-    return Response(generate(), content_type="text/event-stream")
+    predictions = s.predict_data(condition, data_frame)
+    return jsonify({"predictions": predictions}), 200
 
 @app.route("/data-visualization", methods=["GET"])
 def data_visualization():
