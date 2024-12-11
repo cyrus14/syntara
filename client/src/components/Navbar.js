@@ -28,9 +28,12 @@ function Navbar({ user, onSignIn, onSignOut, activeTab, setActiveTab }) {
                 Welcome, {user.displayName}
               </span>
               <img
-                src={user.photoURL}
+                src={user?.photoURL || "/default-profile.jpg"}
                 alt="Profile"
                 className="w-10 h-10 rounded-full cursor-pointer"
+                onError={(e) => {
+                  e.target.src = "/default-profile.jpg"; // Fallback to default image
+                }}
               />
               <button
                 onClick={onSignOut}
