@@ -7,7 +7,7 @@ function WelcomeSection({ onSignIn }) {
     const target = document.getElementById("about").offsetTop;
     const startPosition = window.pageYOffset;
     const distance = target - startPosition;
-    const duration = 1000; // Adjust duration (in milliseconds) for slower scrolling
+    const duration = 1000;
     let start = null;
 
     const step = (timestamp) => {
@@ -28,7 +28,6 @@ function WelcomeSection({ onSignIn }) {
     requestAnimationFrame(step);
   };
 
-  // Easing function for smoother animation
   const easeInOutCubic = (t, b, c, d) => {
     t /= d / 2;
     if (t < 1) return (c / 2) * t * t * t + b;
@@ -37,7 +36,17 @@ function WelcomeSection({ onSignIn }) {
   };
 
   return (
-    <div className="h-screen bg-gradient-to-br from-blue-600 to-red-600 flex flex-col justify-center items-center relative text-white gradient-background">
+    <div className="h-screen bg-gradient-to-br from-blue-600 to-red-600 flex flex-col justify-center items-center relative text-white">
+      <div className="absolute top-8 flex items-center space-x-4">
+        <img
+          src="/transparent-logo.png"
+          alt="Syntara Logo"
+          className="h-24 w-24 opacity-70"
+        />
+        <span className="text-5xl font-bold opacity-70">Syntara</span>
+      </div>
+
+      {/* Main Content */}
       <div className="text-center">
         <h1 className="text-5xl font-bold mb-4">
           Unlock the Power of Healthcare Data
