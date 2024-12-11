@@ -3,16 +3,16 @@ from tempfile import TemporaryDirectory
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-from concrete import fhe
-from concrete.ml.sklearn import SGDClassifier
-from concrete.compiler import check_gpu_available
+# from concrete import fhe
+# from concrete.ml.sklearn import SGDClassifier
+# from concrete.compiler import check_gpu_available
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.decomposition import PCA
-from concrete.compiler import check_gpu_available
+# from concrete.compiler import check_gpu_available
 from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import MinMaxScaler
-from concrete.ml.sklearn import SGDClassifier
+# from concrete.ml.sklearn import SGDClassifier
 from client import Client
 import sys
 import os
