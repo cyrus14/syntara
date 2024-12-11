@@ -36,7 +36,7 @@ function WelcomeSection({ onSignIn }) {
   };
 
   return (
-    <div className="h-screen bg-gradient-to-br from-blue-600 to-red-600 flex flex-col justify-center items-center relative text-white">
+    <div className="h-screen bg-gradient-to-br from-blue-600 to-red-600 flex flex-col justify-center items-center relative text-white gradient-background">
       <div className="absolute top-8 flex items-center space-x-4">
         <img
           src="/transparent-logo.png"
