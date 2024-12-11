@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
-import WelcomeNavbar from "./components/WelcomeNavBar";
-import UploadSection from "./components/UploadSection";
+import UploadAndPredictSection from "./components/UploadAndPredictSection";
 import SearchSection from "./components/SearchSection";
-import PredictSection from "./components/PredictSection";
 import WelcomeSection from "./components/WelcomeSection";
 import AboutSection from "./components/AboutSection";
 import Footer from "./components/Footer";
@@ -13,7 +11,6 @@ import { auth, provider, signInWithPopup, signOut } from "./firebase";
 function App() {
   const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState("upload");
-  const [welcomeTab, setWelcomeTab] = useState("welcome");
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
@@ -71,26 +68,22 @@ function App() {
                   activeTab={activeTab}
                   setActiveTab={setActiveTab}
                 />
+<<<<<<< HEAD
                 {isAdmin &&
                 <SearchSection />}
                 <UploadSection />
                 <PredictSection />
+=======
+                <SearchSection />
+                <UploadAndPredictSection />
+>>>>>>> 8b213d9280b0d23fe9d3b978a351f749ca978082
               </>
             )}
           </>
         ) : (
           <>
-            {" "}
-            <WelcomeNavbar
-              activeTab={welcomeTab}
-              setActiveTab={setWelcomeTab}
-            />
-            <div className="flex-grow">
-              {welcomeTab === "welcome" && (
-                <WelcomeSection onSignIn={handleSignIn} />
-              )}
-              {welcomeTab === "about" && <AboutSection />}
-            </div>
+            <WelcomeSection onSignIn={handleSignIn} />
+            <AboutSection />
           </>
         )}
       </div>

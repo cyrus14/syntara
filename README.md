@@ -4,16 +4,16 @@
 
 Syntara is a platform that helps researchers and healthcare providers securely access and analyze valuable insights without violating HIPAA, thanks to our privacy-focused federated data network.
 
-## Setting Up Project
+## Setting Up the Project
 
-- Add file firebase.config.js in client/src and paste in firebaseconfig file
-- Install all python packages in backend/requirements.txt
+- Add file `firebase.config.js` in `client/src` and paste in `firebase-config.json` file
+- Install all Python packages in `backend/requirements.txt`
 - In client, run `npm i` to download required packages.
 
-## Running project:
+## Running the Project
 
 - Run `python backend/api.py`
-- Run `npm start in client folder
+- Run `npm start` in client folder
 
 Old instructions
 
