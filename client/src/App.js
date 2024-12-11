@@ -69,6 +69,7 @@ function App() {
                   onSignOut={handleSignOut}
                   activeTab={activeTab}
                   setActiveTab={setActiveTab}
+                  isAdmin={isAdmin}
                 />
 
                 <SearchSection />

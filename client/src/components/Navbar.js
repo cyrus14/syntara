@@ -1,6 +1,6 @@
 import React from "react";
 
-function Navbar({ user, onSignIn, onSignOut, activeTab, setActiveTab }) {
+function Navbar({ user, onSignIn, onSignOut, activeTab, setActiveTab, isAdmin }) {
   return (
     <nav className="bg-white shadow">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -24,9 +24,16 @@ function Navbar({ user, onSignIn, onSignOut, activeTab, setActiveTab }) {
         <div className="flex items-center">
           {user ? (
             <>
-              <span className="text-gray-800 mr-4">
-                Welcome, {user.displayName}
-              </span>
+        <span className="text-gray-800 mr-4 flex items-center">
+          {isAdmin && (
+            <span
+              className="mr-2 bg-red-500 text-white text-sm font-semibold px-2 py-1 rounded"
+            >
+              Contributor
+            </span>
+          )}
+          Welcome, {user.displayName}
+        </span>
               <img
                 src={user?.photoURL || "/default-profile.jpg"}
                 alt="Profile"
