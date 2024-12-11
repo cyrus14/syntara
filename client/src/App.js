@@ -9,17 +9,37 @@ import AboutSection from "./components/AboutSection";
 import Footer from "./components/Footer";
 import { auth, provider, signInWithPopup, signOut } from "./firebase";
 
+
 function App() {
   const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState("upload");
   const [welcomeTab, setWelcomeTab] = useState("welcome");
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
       setUser(user || null);
+  
+      if (user) {
+        try {
+          // Fetch admin emails from your backend
+          const response = await fetch("http://localhost:8000/get-admin-emails");
+          const adminEmailsJson = await response.json();
+  
+          // Check if the user's email is in the admin email list
+          const isAdminUser = adminEmailsJson.adminEmails.includes(user.email);
+          setIsAdmin(isAdminUser);
+        } catch (error) {
+          console.error("Error checking admin email:", error);
+        }
+      } else {
+        setIsAdmin(false); // Reset admin status when no user is logged in
+      }
     });
+  
     return () => unsubscribe();
   }, []);
+  
 
   const handleSignIn = async () => {
     try {
@@ -51,7 +71,8 @@ function App() {
                   activeTab={activeTab}
                   setActiveTab={setActiveTab}
                 />
-                <SearchSection />
+                {isAdmin &&
+                <SearchSection />}
                 <UploadSection />
                 <PredictSection />
               </>

@@ -1,11 +1,19 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from flask_cors import CORS
 from client import Client
 from server import Server
 import pandas as pd
 from io import StringIO
+import json
 from initialize_firebase import initialize_firebase
-from flask import current_app as app
+import firebase_admin
+from firebase_admin import credentials, firestore, storage
+app = Flask(__name__)
+
+# Initialize Firebase Admin SDK
+cred = credentials.Certificate("path/to/your/serviceAccountKey.json")
+firebase_admin.initialize_app(cred)
+db = firestore.client()
 
 app = Flask(__name__)
 CORS(app, origins="*")
@@ -60,8 +68,22 @@ def predict():
     csv_data = file.read().decode("utf-8")
     csv_data_io = StringIO(csv_data)
     data_frame = pd.read_csv(csv_data_io)
-    predictions = s.predict_data(condition, data_frame)
-    return jsonify({"predictions": predictions}), 200
+
+    # Generator to simulate progress and send updates
+    def generate():
+        steps = 10  # Simulated number of progress steps
+        for i in range(steps):
+            time.sleep(0.5)  # Simulate some processing delay
+            yield f"data:{int((i + 1) / steps * 100)}\n\n"  # Send progress as a percentage
+
+        # Perform the actual prediction
+        predictions = s.predict_data(condition, data_frame)
+
+        # Send the completion signal and predictions
+        yield f"data:done\n\n"
+        yield f"data:{predictions}\n\n"
+
+    return Response(generate(), content_type="text/event-stream")
 
 @app.route("/data-visualization", methods=["GET"])
 def data_visualization():
@@ -73,6 +95,32 @@ def data_visualization():
         "values": [100, 200, 150, 300],
     }
     return jsonify(mock_data)
+
+@app.route("/get-admin-emails", methods=["GET"])
+def get_admin_emails():
+    try:
+        print("Fetching admin emails from Firebase Storage...")
+
+        # Reference to the JSON file in Firebase Storage
+        bucket = storage.bucket()
+        blob = bucket.blob("admins.json")  # Replace with your file path in Storage
+
+        # Download the file content as a string
+        file_content = blob.download_as_text()
+        print(f"File content fetched: {file_content}")
+
+        # Parse the JSON file
+        admin_data = json.loads(file_content)
+        print(f"Parsed JSON data: {admin_data}")
+
+        # Extract admin emails (assuming the JSON has a key "emails")
+        admin_emails = admin_data.get("emails", [])
+        print(f"Extracted admin emails: {admin_emails}")
+
+        return jsonify({"adminEmails": admin_emails}), 200
+    except Exception as e:
+        print(f"Exception occurred while fetching admin emails: {e}")
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=False, port=8000, threaded=False)

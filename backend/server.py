@@ -4,24 +4,24 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import random
-from concrete import fhe
-from concrete.ml.deployment import FHEModelClient, FHEModelDev, FHEModelServer
+# from concrete import fhe
+# from concrete.ml.deployment import FHEModelClient, FHEModelDev, FHEModelServer
 from sklearn.feature_selection import SelectKBest, f_classif
-from concrete.ml.sklearn import SGDClassifier
-from concrete.compiler import check_gpu_available
+# from concrete.ml.sklearn import SGDClassifier
+# from concrete.compiler import check_gpu_available
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler, LabelEncoder
 from sklearn.decomposition import PCA
-from concrete.compiler import check_gpu_available
+# from concrete.compiler import check_gpu_available
 from matplotlib.colors import ListedColormap
 from matplotlib.lines import Line2D
 from sklearn import datasets
 from sklearn.linear_model import SGDClassifier as SklearnSGDClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import MinMaxScaler
-from concrete import fhe
-from concrete.ml.deployment import FHEModelClient, FHEModelDev, FHEModelServer
-from concrete.ml.sklearn import SGDClassifier
+# from concrete import fhe
+# from concrete.ml.deployment import FHEModelClient, FHEModelDev, FHEModelServer
+# from concrete.ml.sklearn import SGDClassifier
 from client import Client
 import sys
 import os
