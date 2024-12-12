@@ -8,7 +8,6 @@ import Footer from "./components/Footer";
 import { auth, provider, signInWithPopup, signOut } from "./firebase";
 import PredictSection from "./components/PredictSection";
 
-
 function App() {
   const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState("upload");
@@ -17,13 +16,15 @@ function App() {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       setUser(user || null);
-  
+
       if (user) {
         try {
           // Fetch admin emails from your backend
-          const response = await fetch("http://localhost:8000/get-admin-emails");
+          const response = await fetch(
+            "http://localhost:8000/get-admin-emails"
+          );
           const adminEmailsJson = await response.json();
-  
+
           // Check if the user's email is in the admin email list
           const isAdminUser = adminEmailsJson.adminEmails.includes(user.email);
           setIsAdmin(isAdminUser);
@@ -35,10 +36,9 @@ function App() {
         setIsAdmin(false); // Reset admin status when no user is logged in
       }
     });
-  
+
     return () => unsubscribe();
   }, []);
-  
 
   const handleSignIn = async () => {
     try {
@@ -57,27 +57,22 @@ function App() {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen flex flex-col">
+    <div className="bg-gradient-to-br from-blue-600 to-red-600 min-h-screen flex flex-col">
       <div className="flex-grow">
         {user ? (
           <>
-            {activeTab === "upload" && (
-              <>
-                <Navbar
-                  user={user}
-                  onSignIn={handleSignIn}
-                  onSignOut={handleSignOut}
-                  activeTab={activeTab}
-                  setActiveTab={setActiveTab}
-                  isAdmin={isAdmin}
-                />
+            <Navbar
+              user={user}
+              onSignIn={handleSignIn}
+              onSignOut={handleSignOut}
+              isAdmin={isAdmin}
+            />
 
-                <SearchSection />
-                {isAdmin &&
-                <UploadAndPredictSection />}
-                {!isAdmin && ( <PredictSection />)}
-              </>
-            )}
+            <div className="container mx-auto px-4 py-8 space-y-8">
+              <SearchSection />
+              {isAdmin && <UploadAndPredictSection />}
+              {!isAdmin && <PredictSection />}
+            </div>
           </>
         ) : (
           <>

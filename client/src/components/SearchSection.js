@@ -1,29 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { storage, ref, listAll } from "../firebase";
+import React, { useState } from "react";
 import { CONDITIONS } from "../constants";
 
 function SearchSection() {
-  // const [fileNames, setFileNames] = useState([]);
   const [selectedFile, setSelectedFile] = useState("");
 
-  // useEffect(() => {
-  //   const fetchFileNames = async () => {
-  //     const modelsRef = ref(storage, "Models");
-  //     try {
-  //       const result = await listAll(modelsRef);
-  //       const names = result.items.map((item) => item.name);
-  //       setFileNames(names);
-  //     } catch (error) {
-  //       console.error("Error fetching file names:", error);
-  //     }
-  //   };
-
-  //   fetchFileNames();
-  // }, []);
-
   return (
-    <div id="search-section" className="container mx-auto px-4 py-8">
-      <h2 className="text-2xl font-bold mb-4">View Dataset Insights</h2>
+    <div className="bg-white bg-opacity-90 p-6 rounded-lg shadow-lg">
+      <h2 className="text-3xl font-bold mb-4 text-gray-800">
+        View Dataset Insights
+      </h2>
       <div className="flex items-center space-x-4">
         <select
           value={selectedFile}
@@ -33,11 +18,13 @@ function SearchSection() {
           <option value="" disabled>
             Select a model...
           </option>
-          {CONDITIONS.map((condition) => (
-            <option value={condition}>{condition}</option>
+          {CONDITIONS.map((condition, index) => (
+            <option key={index} value={condition}>
+              {condition}
+            </option>
           ))}
         </select>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded">
+        <button className="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 transition">
           Search
         </button>
       </div>
