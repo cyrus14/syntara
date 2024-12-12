@@ -72,7 +72,7 @@ function PredictSection({
         setIsPredictLoading(false);
         setFeedback(
           error.response?.data?.error ||
-            "Error during prediction. Please try again."
+          "Error during prediction. Please try again."
         );
       }, 500);
     }
@@ -125,11 +125,10 @@ function PredictSection({
       )}
       {feedback && !isPredictLoading && (
         <div
-          className={`mt-4 font-semibold ${
-            feedback.toLowerCase().includes("success")
+          className={`mt-4 font-semibold ${feedback.toLowerCase().includes("success")
               ? "text-green-600"
               : "text-red-600"
-          }`}
+            }`}
         >
           {feedback}
         </div>
@@ -138,7 +137,7 @@ function PredictSection({
         <div className="mt-4">
           <h3 className="text-lg font-semibold">Prediction Results:</h3>
           <pre className="bg-gray-100 p-4 rounded">
-            {JSON.stringify(predictionResult, null, 2)}
+            {predictionResult}
           </pre>
         </div>
       )}
