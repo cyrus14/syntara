@@ -24,7 +24,7 @@ function SearchSection() {
             </option>
           ))}
         </select>
-        <button className="bg-gradient-to-r from-blue-600 to-red-600 text-white px-4 py-2 rounded shadow hover:opacity-90 transition">
+        <button className="bg-white text-blue-600 font-semibold px-4 py-2 rounded shadow hover:bg-gray-100 border border-gray-300 transition">
           Search
         </button>
       </div>
