@@ -65,7 +65,7 @@ def predict():
     predictions = s.predict_data(condition, data_frame)
     return jsonify({"predictions": predictions}), 200
 
-@app.route("/data-visualization", methods=["GET"])
+@app.route("/data-visualization", methods=["POST"])
 def data_visualization():
     with app.app_context():
         try:
