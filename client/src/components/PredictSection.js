@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { CONDITIONS } from "../constants";
 
-function PredictSection({ isPredictLoading, setIsPredictLoading, isUploadLoading}) {
+function PredictSection({
+  isPredictLoading,
+  setIsPredictLoading,
+  isUploadLoading,
+}) {
   const [file, setFile] = useState(null);
   const [selectedCondition, setSelectedCondition] = useState("");
   const [feedback, setFeedback] = useState("");
@@ -12,13 +16,10 @@ function PredictSection({ isPredictLoading, setIsPredictLoading, isUploadLoading
   useEffect(() => {
     let intervalId;
     if (isPredictLoading && progress < 95) {
-      // Increment progress slower: e.g., every 1 second
       intervalId = setInterval(() => {
-        setProgress((prevProgress) => {
-          // Increment by a small random amount, e.g., between 0 and 2
-          const increment = Math.random() * 2;
-          return Math.min(prevProgress + increment, 95);
-        });
+        setProgress((prevProgress) =>
+          Math.min(prevProgress + Math.random() * 2, 95)
+        );
       }, 850);
     }
     return () => clearInterval(intervalId);
@@ -41,8 +42,8 @@ function PredictSection({ isPredictLoading, setIsPredictLoading, isUploadLoading
       return;
     }
 
-    setProgress(2); 
-    setIsPredictLoading(true); 
+    setProgress(2);
+    setIsPredictLoading(true);
     setFeedback("");
     setPredictionResult("");
 
@@ -51,65 +52,67 @@ function PredictSection({ isPredictLoading, setIsPredictLoading, isUploadLoading
     formData.append("condition", selectedCondition);
 
     try {
-      const response = await axios.post("http://localhost:8000/predict", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      // Once we have the result, quickly move the bar to 100
+      const response = await axios.post(
+        "http://localhost:8000/predict",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
       setProgress(100);
-
-      // After a short delay to show completion, set the result and turn off loading
       setTimeout(() => {
         setIsPredictLoading(false);
         setPredictionResult(response.data.predictions);
         setFeedback("Prediction completed successfully!");
       }, 500);
     } catch (error) {
-      console.error("Error during prediction:", error.response || error.message);
+      console.error("Error during prediction:", error);
       setProgress(100);
       setTimeout(() => {
         setIsPredictLoading(false);
         setFeedback(
-          error.response?.data?.error || "Error during prediction. Please try again."
+          error.response?.data?.error ||
+            "Error during prediction. Please try again."
         );
       }, 500);
     }
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 bg-white shadow-md rounded-lg mt-8">
-      <h2 className="text-2xl font-bold mb-4">Upload CSV for Predictions</h2>
-      <input type="file" onChange={handleFileChange} className="mb-4" />
-
-      <label className="block mb-2 font-semibold">Select Condition/Model:</label>
+    <div className="bg-white bg-opacity-70 backdrop-blur-md p-6 rounded-lg shadow-lg border-2 border-gradient-to-r from-blue-600 to-red-600 mt-8">
+      <h2 className="text-3xl font-bold mb-4 text-gray-800">
+        Upload CSV for Predictions
+      </h2>
+      <input
+        type="file"
+        onChange={handleFileChange}
+        className="w-full p-3 border border-gray-300 rounded mb-4"
+      />
+      <label className="block mb-2 font-semibold text-gray-700">
+        Select Condition/Model:
+      </label>
       <select
         value={selectedCondition}
         onChange={(e) => setSelectedCondition(e.target.value)}
-        className="w-full p-2 border border-gray-300 rounded mb-4"
+        className="w-full p-3 border border-gray-300 rounded mb-4"
       >
         <option value="" disabled>
           Select a condition...
         </option>
-        {CONDITIONS.map((condition) => (
-          <option key={condition} value={condition}>
+        {CONDITIONS.map((condition, index) => (
+          <option key={index} value={condition}>
             {condition}
           </option>
         ))}
       </select>
-
-      {/* Hide the button while loading */}
       {!isPredictLoading && !isUploadLoading && (
         <button
           onClick={handlePrediction}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="bg-gradient-to-r from-blue-600 to-red-600 text-white px-4 py-2 rounded shadow hover:opacity-90 transition"
         >
           Predict
         </button>
       )}
-
-      {/* Loading Bar */}
       {isPredictLoading && (
         <div className="w-full bg-gray-200 rounded mt-4">
           <div
@@ -120,19 +123,17 @@ function PredictSection({ isPredictLoading, setIsPredictLoading, isUploadLoading
           </div>
         </div>
       )}
-
-      {/* Feedback Message */}
       {feedback && !isPredictLoading && (
         <div
           className={`mt-4 font-semibold ${
-            feedback.includes("successfully") ? "text-green-600" : "text-red-600"
+            feedback.toLowerCase().includes("success")
+              ? "text-green-600"
+              : "text-red-600"
           }`}
         >
           {feedback}
         </div>
       )}
-
-      {/* Display Prediction Result */}
       {predictionResult && !isPredictLoading && (
         <div className="mt-4">
           <h3 className="text-lg font-semibold">Prediction Results:</h3>

@@ -2,7 +2,11 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { CONDITIONS } from "../constants";
 
-function UploadSection({isUploadLoading, setIsUploadLoading, isPredictLoading}) {
+function UploadSection({
+  isUploadLoading,
+  setIsUploadLoading,
+  isPredictLoading,
+}) {
   const [file, setFile] = useState(null);
   const [selectedCondition, setSelectedCondition] = useState("");
   const [feedback, setFeedback] = useState("");
@@ -11,12 +15,10 @@ function UploadSection({isUploadLoading, setIsUploadLoading, isPredictLoading}) 
   useEffect(() => {
     let intervalId;
     if (isUploadLoading && progress < 95) {
-      // Increment progress slower: for example, every 1 second
       intervalId = setInterval(() => {
-        setProgress((prevProgress) => {
-          const increment = Math.random();
-          return Math.min(prevProgress + increment, 95);
-        });
+        setProgress((prevProgress) =>
+          Math.min(prevProgress + Math.random(), 95)
+        );
       }, 6000);
     }
     return () => clearInterval(intervalId);
@@ -35,7 +37,7 @@ function UploadSection({isUploadLoading, setIsUploadLoading, isPredictLoading}) 
 
   const handleUpload = async () => {
     if (!file || !selectedCondition) {
-      setFeedback("Please select a file and select a condition.");
+      setFeedback("Please select a file and a condition.");
       return;
     }
 
@@ -52,22 +54,16 @@ function UploadSection({isUploadLoading, setIsUploadLoading, isPredictLoading}) 
         "http://localhost:8000/upload-csv",
         formData,
         {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+          headers: { "Content-Type": "multipart/form-data" },
         }
       );
-
-      // Once we have the result, quickly move the bar to 100
       setProgress(100);
-
-      // After a short delay to show completion, set the feedback and turn off loading
       setTimeout(() => {
         setIsUploadLoading(false);
         setFeedback(response.data.message);
       }, 500);
     } catch (error) {
-      console.error("Error uploading file:", error.response || error.message);
+      console.error("Error uploading file:", error);
       setProgress(100);
       setTimeout(() => {
         setIsUploadLoading(false);
@@ -80,37 +76,40 @@ function UploadSection({isUploadLoading, setIsUploadLoading, isPredictLoading}) 
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 bg-white shadow-md rounded-lg">
-      <h2 className="text-2xl font-bold mb-4">Securely Upload Hospital Data</h2>
-      <input type="file" onChange={handleFileChange} className="mb-4" />
-
-      <label className="block mb-2 font-semibold">Select Condition:</label>
+    <div className="bg-white bg-opacity-70 backdrop-blur-md p-6 rounded-lg shadow-lg border-2 border-gradient-to-r from-blue-600 to-red-600">
+      <h2 className="text-3xl font-bold mb-4 text-gray-800">
+        Securely Upload Hospital Data
+      </h2>
+      <input
+        type="file"
+        onChange={handleFileChange}
+        className="w-full p-3 border border-gray-300 rounded mb-4"
+      />
+      <label className="block mb-2 font-semibold text-gray-700">
+        Select Condition:
+      </label>
       <select
         value={selectedCondition}
         onChange={(e) => setSelectedCondition(e.target.value)}
-        className="w-full p-2 border border-gray-300 rounded mb-4"
+        className="w-full p-3 border border-gray-300 rounded mb-4"
       >
         <option value="" disabled>
           Select a condition...
         </option>
-        {CONDITIONS.map((condition) => (
-          <option key={condition} value={condition}>
+        {CONDITIONS.map((condition, index) => (
+          <option key={index} value={condition}>
             {condition}
           </option>
         ))}
       </select>
-
-      {/* Hide the Upload button while loading */}
       {!isPredictLoading && !isUploadLoading && (
         <button
           onClick={handleUpload}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="bg-gradient-to-r from-blue-600 to-red-600 text-white px-4 py-2 rounded shadow hover:opacity-90 transition"
         >
           Upload
         </button>
       )}
-
-      {/* Loading Bar */}
       {isUploadLoading && (
         <div className="w-full bg-gray-200 rounded mt-4">
           <div
@@ -121,8 +120,6 @@ function UploadSection({isUploadLoading, setIsUploadLoading, isPredictLoading}) 
           </div>
         </div>
       )}
-
-      {/* Feedback Message */}
       {feedback && !isUploadLoading && (
         <div
           className={`mt-4 font-semibold ${

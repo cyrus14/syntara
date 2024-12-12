@@ -1,12 +1,10 @@
 function Navbar({ user, onSignIn, onSignOut, isAdmin }) {
   return (
-    <nav className="bg-white shadow-md">
+    <nav className="bg-white shadow-md border-b-4 border-gradient-to-r from-blue-600 to-red-600">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <div className="flex items-center space-x-8">
-          <img src="/logo.png" alt="Syntara Logo" className="h-16 w-16 mr-2" />
-          <span className="text-xl font-bold text-gray-800">Syntara</span>
+          <span className="text-2xl font-bold text-blue-600">Syntara</span>
         </div>
-
         <div className="flex items-center">
           {user ? (
             <>
@@ -28,7 +26,7 @@ function Navbar({ user, onSignIn, onSignOut, isAdmin }) {
               />
               <button
                 onClick={onSignOut}
-                className="ml-4 bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 transition"
+                className="ml-4 bg-blue-600 text-white font-semibold px-4 py-2 rounded shadow hover:bg-blue-700 transition"
               >
                 Sign Out
               </button>
@@ -36,7 +34,7 @@ function Navbar({ user, onSignIn, onSignOut, isAdmin }) {
           ) : (
             <button
               onClick={onSignIn}
-              className="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 transition"
+              className="bg-blue-600 text-white font-semibold px-4 py-2 rounded shadow hover:bg-blue-700 transition"
             >
               Sign In
             </button>

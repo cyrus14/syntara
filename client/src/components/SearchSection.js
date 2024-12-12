@@ -5,7 +5,7 @@ function SearchSection() {
   const [selectedFile, setSelectedFile] = useState("");
 
   return (
-    <div className="bg-white bg-opacity-90 p-6 rounded-lg shadow-lg">
+    <div className="bg-white bg-opacity-70 backdrop-blur-md p-6 rounded-lg shadow-lg border-2 border-gradient-to-r from-blue-600 to-red-600">
       <h2 className="text-3xl font-bold mb-4 text-gray-800">
         View Dataset Insights
       </h2>
@@ -13,7 +13,7 @@ function SearchSection() {
         <select
           value={selectedFile}
           onChange={(e) => setSelectedFile(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded"
+          className="w-full p-3 border border-gray-300 rounded"
         >
           <option value="" disabled>
             Select a model...
@@ -24,7 +24,7 @@ function SearchSection() {
             </option>
           ))}
         </select>
-        <button className="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 transition">
+        <button className="bg-gradient-to-r from-blue-600 to-red-600 text-white px-4 py-2 rounded shadow hover:opacity-90 transition">
           Search
         </button>
       </div>
