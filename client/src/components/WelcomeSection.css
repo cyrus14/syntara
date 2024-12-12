@@ -17,3 +17,47 @@
   background-size: 400% 400%;
   animation: gradientAnimation 15s ease infinite;
 }
+
+@keyframes circle {
+  0% {
+    transform: translate(10px, 12px); /* Start position */
+  }
+  25% {
+    transform: translate(20px, 20px); /* Move down-right */
+  }
+  50% {
+    transform: translate(10px, 30px); /* Move down */
+  }
+  75% {
+    transform: translate(0px, 20px); /* Move up-left */
+  }
+  100% {
+    transform: translate(10px, 12px); /* Back to start */
+  }
+}
+
+@keyframes circle-slow {
+  0% {
+    transform: translate(0px, 0px); /* Start position */
+  }
+  25% {
+    transform: translate(-10px, 10px); /* Move up-left */
+  }
+  50% {
+    transform: translate(-20px, 0px); /* Move left */
+  }
+  75% {
+    transform: translate(-10px, -10px); /* Move down-right */
+  }
+  100% {
+    transform: translate(0px, 0px); /* Back to start */
+  }
+}
+
+.animate-circle {
+  animation: circle 7s ease-in-out infinite;
+}
+
+.animate-circle-slow {
+  animation: circle-slow 7s ease-in-out infinite;
+}
