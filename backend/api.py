@@ -67,14 +67,17 @@ def predict():
 
 @app.route("/data-visualization", methods=["GET"])
 def data_visualization():
-
-    # Replace with actual data-fetching logic
-    # Data should be dictionary with same formmat as the mock_data
-    mock_data = {
-        "dates": ["2024-10-01", "2024-10-02", "2024-10-03", "2024-10-04"],
-        "values": [100, 200, 150, 300],
-    }
-    return jsonify(mock_data)
+    with app.app_context():
+        try:
+            condition = request.form.get("condition")
+            if not condition:
+                return jsonify({"error": "Condition not selected"}), 400
+            count, timestamp = s.get_data_visualization(condition)
+            return jsonify({"count": count, "timestamp": timestamp}), 200
+        
+        except Exception as e:
+            print(f"Exception occurred: {e}")
+            return jsonify({"error": str(e)}), 500
 
 @app.route("/get-admin-emails", methods=["GET"])
 def get_admin_emails():

@@ -59,6 +59,10 @@ class Server:
         updated_std = np.sqrt(updated_variance)
         return updated_mean, updated_std, old_count
 
+    def get_data_visualization(self, condition):
+        _, _, _, _, old_count, old_timestamp = load_model_from_firebase(condition)
+        return old_count, old_timestamp
+
     def recieve_encrypted_data(self, condition, data):
         x = data.iloc[:, :-1].copy()
         y = data.iloc[:, -1].copy().squeeze()
