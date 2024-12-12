@@ -119,7 +119,8 @@ class Server:
         predictions = list(y_pred)
         mapped_predictions = ["positive" if p == 1 else "negative" for p in y_pred]
         message = "The current model was trained on " + str(count) + " datapoints" + "\n"
-        message += "The model made the following predictions for the " + str(condition) + " condition: " + str(mapped_predictions) + "\n"
+        message += "The model made the following predictions for the " + str(condition) + " condition: " + "\n"
+        message += str(mapped_predictions) + "\n"
 
         if len(y_pred) > 1:
             if all(p == 1 for p in predictions):
