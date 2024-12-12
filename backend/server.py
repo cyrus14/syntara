@@ -15,8 +15,7 @@ import sys
 import os
 from load_fb_model import load_model_from_firebase
 from save_fb_model import save_model_to_firebase
-from datetime import datetime
-
+import time
 
 use_gpu_if_available = False
 device = "cuda" if use_gpu_if_available and check_gpu_available() else "cpu"
@@ -49,14 +48,16 @@ class Server:
         new_count = new_data.shape[0]
         new_mean = np.mean(new_data)
         new_variance = np.var(new_data, ddof=0) 
-        total_count = old_count + new_count
+        if old_count is not None:
+            total_count = old_count[-1] + new_count
+            old_count.append(total_count)
         updated_mean = old_mean + (new_count / total_count) * (new_mean - old_mean)
         updated_variance = (
-            (old_count * (old_std ** 2) + new_count * new_variance) / total_count +
-            (old_count * new_count / total_count**2) * (old_mean - new_mean)**2
+            (old_count[-1] * (old_std ** 2) + new_count * new_variance) / total_count +
+            (old_count[-1] * new_count / total_count**2) * (old_mean - new_mean)**2
         )
         updated_std = np.sqrt(updated_variance)
-        return updated_mean, updated_std, total_count
+        return updated_mean, updated_std, old_count
 
     def recieve_encrypted_data(self, condition, data):
         x = data.iloc[:, :-1].copy()
@@ -65,11 +66,13 @@ class Server:
             x[column] = LabelEncoder().fit_transform(x[column])
         if y.dtype == 'object':
             y = LabelEncoder().fit_transform(y)
-        x_scaled, mean, std, count = self.scale_to_range(x)
+        x_scaled, mean, std, current_count = self.scale_to_range(x)
         x_train, x_test, y_train, y_test = train_test_split(x_scaled, y, test_size=0.2, random_state=42)
         
         try:
-            weights, bias, old_mean, old_std, old_count = load_model_from_firebase(condition)
+            weights, bias, old_mean, old_std, old_count, old_timestamp = load_model_from_firebase(condition)
+            print(old_count)
+            print(old_timestamp)
             model = SGDClassifier(
                 random_state=42,  
                 max_iter=MAX_ITER, 
@@ -88,7 +91,8 @@ class Server:
             model_dump = model.dump_dict()
             weights = model_dump["_q_weights"]
             bias = model_dump["_q_bias"]
-            data = (weights, bias, mean, std, count)
+            old_timestamp.append(int(time.time()))
+            data = (weights, bias, mean, std, count, old_timestamp)
             save_model_to_firebase(data, condition)
 
         except Exception as e:
@@ -108,7 +112,11 @@ class Server:
             weights = model_dump["_q_weights"]
             bias = model_dump["_q_bias"]
             print(weights, bias)
-            data = (weights, bias, mean, std, count)
+            count = [current_count]
+            curr_timestamp = [int(time.time())]
+            print(count)
+            print(curr_timestamp)
+            data = (weights, bias, mean, std, count, curr_timestamp)
             save_model_to_firebase(data, condition)
         
         
@@ -137,7 +145,7 @@ class Server:
     
     def predict_data(self, condition, data):
         try:
-            weights, bias, mean, std, count = load_model_from_firebase(condition)
+            weights, bias, mean, std, count, timestamp = load_model_from_firebase(condition)
             model = SGDClassifier(
                 random_state=42,  
                 max_iter=1,  
@@ -155,7 +163,7 @@ class Server:
                 x[column] = LabelEncoder().fit_transform(x[column])
             x_scaled = self.scale_test_to_range(x, mean, std)
             y_pred = model.predict(x_scaled)
-            return self.generate_prediction_message(y_pred, condition, count)
+            return self.generate_prediction_message(y_pred, condition, count[-1])
         except Exception as e:
             print(str(e))
             return "Sorry, an error has occured, please try again!"
