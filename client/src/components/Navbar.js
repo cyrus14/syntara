@@ -5,13 +5,16 @@ function Navbar({ user, onSignIn, onSignOut, isAdmin }) {
     <nav
       className={
         styles.navbar +
-        "bg-gradient-to-r from-blue-600 via-purple-600 to-red-600 animate-gradient-x shadow-md "
+        " bg-gradient-to-r from-blue-600 via-purple-600 to-red-600 animate-gradient-x shadow-md"
       }
     >
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         {/* Animated Syntara Logo/Name */}
         <div className="flex items-center space-x-8">
-          <span className="text-3xl font-bold text-white hover:opacity-90 transition">
+          <span
+            className="text-3xl font-bold text-white hover:opacity-90 transition cursor-pointer"
+            onClick={user ? onSignOut : onSignIn} // Sign out if user is logged in, otherwise sign in
+          >
             Syntara
           </span>
         </div>
