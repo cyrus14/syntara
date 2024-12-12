@@ -126,8 +126,8 @@ function PredictSection({
       {feedback && !isPredictLoading && (
         <div
           className={`mt-4 font-semibold ${feedback.toLowerCase().includes("success")
-              ? "text-green-600"
-              : "text-red-600"
+            ? "text-green-600"
+            : "text-red-600"
             }`}
         >
           {feedback}
@@ -136,7 +136,7 @@ function PredictSection({
       {predictionResult && !isPredictLoading && (
         <div className="mt-4">
           <h3 className="text-lg font-semibold">Prediction Results:</h3>
-          <pre className="bg-gray-100 p-4 rounded">
+          <pre className="bg-gray-100 p-4 rounded w-full whitespace-pre-wrap break-words overflow-x-auto">
             {predictionResult}
           </pre>
         </div>
