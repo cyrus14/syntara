@@ -10,7 +10,6 @@ import PredictSection from "./components/PredictSection";
 
 function App() {
   const [user, setUser] = useState(null);
-  const [activeTab, setActiveTab] = useState("upload");
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
