@@ -72,7 +72,7 @@ function PredictSection({
         setIsPredictLoading(false);
         setFeedback(
           error.response?.data?.error ||
-          "Error during prediction. Please try again."
+            "Error during prediction. Please try again."
         );
       }, 500);
     }
@@ -108,7 +108,7 @@ function PredictSection({
       {!isPredictLoading && !isUploadLoading && (
         <button
           onClick={handlePrediction}
-          className="bg-gradient-to-r from-blue-600 to-red-600 text-white px-4 py-2 rounded shadow hover:opacity-90 transition"
+          className="bg-white text-blue-600 font-semibold px-4 py-2 rounded shadow hover:bg-gray-100 border border-gray-300 transition"
         >
           Predict
         </button>
@@ -125,10 +125,11 @@ function PredictSection({
       )}
       {feedback && !isPredictLoading && (
         <div
-          className={`mt-4 font-semibold ${feedback.toLowerCase().includes("success")
-            ? "text-green-600"
-            : "text-red-600"
-            }`}
+          className={`mt-4 font-semibold ${
+            feedback.toLowerCase().includes("success")
+              ? "text-green-600"
+              : "text-red-600"
+          }`}
         >
           {feedback}
         </div>
