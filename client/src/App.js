@@ -6,7 +6,7 @@ import WelcomeSection from "./components/WelcomeSection";
 import AboutSection from "./components/AboutSection";
 import Footer from "./components/Footer";
 import { auth, provider, signInWithPopup, signOut } from "./firebase";
-import PredictSection from "./components/PredictSection";
+import PredictSectionOnly from "./components/PredictSectionOnly";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -69,7 +69,7 @@ function App() {
             <div className="container mx-auto px-4 py-8 space-y-8">
               <SearchSection />
               {isAdmin && <UploadAndPredictSection />}
-              {!isAdmin && <PredictSection />}
+              {!isAdmin && <PredictSectionOnly />}
             </div>
           </>
         ) : (
