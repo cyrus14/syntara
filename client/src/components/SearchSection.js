@@ -1,10 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { CONDITIONS } from "../constants";
+import LineChart from "./LineChart";
 
 function SearchSection() {
   const [selectedFile, setSelectedFile] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [realMessage, setRealMessage] = useState("");
+
+  const [chartDataSet, setChartDataSet] = useState(false);
+  const [chartData, setChartData] = useState({});
 
   const handleSearch = async () => {
     if (!selectedFile) {
@@ -14,7 +19,7 @@ function SearchSection() {
 
     try {
       setErrorMessage("");
-
+      setRealMessage("");
       const formData = new FormData();
       formData.append("condition", selectedFile);
 
@@ -25,6 +30,9 @@ function SearchSection() {
       );
 
       const { count, timestamp } = response.data;
+      const message = timestamp.map((time, i) => `For timestamp: ${time}, The count was ${count[i]}.`).join('\n');
+
+      setRealMessage(message);
 
     } catch (error) {
       console.error("Error uploading file:", error.response?.data || error.message);
@@ -56,15 +64,17 @@ function SearchSection() {
         </select>
         <button
           onClick={handleSearch}
-          className="bg-gradient-to-r from-blue-600 to-red-600 text-white px-4 py-2 rounded shadow hover:opacity-90 transition"
-          >
+          className="bg-white text-blue-600 font-semibold px-4 py-2 rounded shadow hover:bg-gray-100 border border-gray-300 transition"
+        >
           Search
         </button>
       </div>
       {errorMessage && (
         <p className="text-red-500 mt-4">{errorMessage}</p>
       )}
-      
+      {realMessage && (
+        <p className="text-blue-500 mt-4">{realMessage}</p>
+      )}
     </div>
   );
 }
