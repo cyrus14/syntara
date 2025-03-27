@@ -63,9 +63,10 @@ class Server:
         _, _, _, _, old_count, old_timestamp = load_model_from_firebase(condition)
         return old_count, old_timestamp
 
-    def recieve_encrypted_data(self, condition, data):
-        x = data.iloc[:, :-1].copy()
-        y = data.iloc[:, -1].copy().squeeze()
+    def recieve_encrypted_data(self, condition, data, target_name):
+        assert target_name in data.columns, "Target column not found!"
+        x = data.drop(columns=[target_name]).copy()
+        y = data[target_name].copy().squeeze()
         for column in x.select_dtypes(include=['object']).columns:
             x[column] = LabelEncoder().fit_transform(x[column])
         if y.dtype == 'object':
@@ -90,7 +91,6 @@ class Server:
             model.fit(x_train, y_train, fhe="execute", device="cpu")
             y_pred = model.predict(x_test)
             accuracy = accuracy_score(y_test, y_pred)
-            print("NEW MODEL")
             print(accuracy)
             model_dump = model.dump_dict()
             weights = model_dump["_q_weights"]

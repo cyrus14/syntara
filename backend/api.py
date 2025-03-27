@@ -13,6 +13,7 @@ app = Flask(__name__)
 CORS(app, origins="*")
 
 s = Server()
+condition_to_target = {"Heart Disease": "target", "ALS": "DiagnosedALS", "FOB": "DiagnosedFOP", "Gaucher": "GaucherDisease", "Kawasaki": "KawasakiDisease"}
 
 @app.route('/upload-csv', methods=['POST'])
 def upload_csv():
@@ -36,7 +37,7 @@ def upload_csv():
             csv_data_io = StringIO(csv_data)
             data_frame = pd.read_csv(csv_data_io)
 
-            s.recieve_encrypted_data(condition, data_frame)
+            s.recieve_encrypted_data(condition, data_frame, condition_to_target[condition])
 
             return jsonify({"message": "File processed successfully with condition: " + condition}), 200
         
