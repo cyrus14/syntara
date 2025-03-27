@@ -17,6 +17,72 @@ from load_fb_model import load_model_from_firebase
 from save_fb_model import save_model_to_firebase
 import time
 
+COLUMN_ALIASES = {
+    # heart_disease (standard columns: age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal)
+    "Heart Disease": {
+        "gender": "sex",
+        "chest_pain_type": "cp",
+        "resting_blood_pressure": "trestbps",
+        "cholesterol": "chol",
+        "fasting_bs": "fbs",
+        "ecg_result": "restecg",
+        "max_hr": "thalach",
+        "exercise_induced_angina": "exang",
+        "st_depression": "oldpeak",
+        "st_slope": "slope",
+        "major_vessels": "ca",
+        "thalassemia_test": "thal"
+    },
+    # als (standard columns: PatientID, AgeYears, Gender, SymptomDurationMonths, MuscleWeaknessScore, FVC_PercentPredicted, UMN_Signs, LMN_Signs, BulbarOnset, ALSFRS_R_Score, Creatinine_mg_dL, DiseaseProgressionRate)
+    "ALS": {
+        "id": "PatientID",
+        "age": "AgeYears",  # only if 'age' is not an input column elsewhere
+        "sex": "Gender",
+        "duration": "SymptomDurationMonths",
+        "weakness": "MuscleWeaknessScore",
+        "fvc_percent": "FVC_PercentPredicted",
+        "umn": "UMN_Signs",
+        "lmn": "LMN_Signs",
+        "bulbar": "BulbarOnset",
+        "alsfrs": "ALSFRS_R_Score",
+        "creatinine": "Creatinine_mg_dL",
+        "progression_rate": "DiseaseProgressionRate"
+    },
+    # fop (PatientID, AgeYears, Gender, ACVR1_MutationPresent, AgeAtOnset, Frequency_HeterotopicOssificationsPerYear, MobilityScore, PainLevel, MalformedGreatToes, FOPSeverityIndex)
+    "FOP": {
+        "mutation": "ACVR1_MutationPresent",
+        "onset_age": "AgeAtOnset",
+        "ho_frequency": "Frequency_HeterotopicOssificationsPerYear",
+        "mobility": "MobilityScore",
+        "pain": "PainLevel",
+        "toe_deformity": "MalformedGreatToes",
+        "severity_score": "FOPSeverityIndex"
+    },
+    # gaucher (PatientID, AgeYears, Gender, GBA_MutationPresent, SpleenVolume_mL, LiverVolume_mL, Hemoglobin_g_dL, PlateletCount_x10E9_L, ChitotriosidaseLevel_nmol_h_mL, BoneLesions)
+    "Gaucher": {
+        "gba_gene_mutation": "GBA_MutationPresent",
+        "spleen_size": "SpleenVolume_mL",
+        "liver_size": "LiverVolume_mL",
+        "hgb": "Hemoglobin_g_dL",
+        "platelet_count": "PlateletCount_x10E9_L",
+        "chitotriosidase": "ChitotriosidaseLevel_nmol_h_mL",
+        "bone_abnormalities": "BoneLesions"
+    },
+    # kawasaki (PatientID, AgeMonths, Gender, FeverDurationDays, ConjunctivalInjection, OralChanges, Rash, ExtremityChanges, CervicalLymphadenopathy, CRP_mg_dL, ESR_mm_hr, WBC_count_uL, Platelets_count_uL)
+    "Kawasaki": {
+        "fever_days": "FeverDurationDays",
+        "conjunctiva": "ConjunctivalInjection",
+        "oral_symptoms": "OralChanges",
+        "skin_rash": "Rash",
+        "limb_changes": "ExtremityChanges",
+        "lymph_nodes": "CervicalLymphadenopathy",
+        "crp": "CRP_mg_dL",
+        "esr": "ESR_mm_hr",
+        "wbc": "WBC_count_uL",
+        "plt_count": "Platelets_count_uL"
+    }
+}
+
 use_gpu_if_available = False
 device = "cuda" if use_gpu_if_available and check_gpu_available() else "cpu"
 MAX_PARAM = 10.0
@@ -62,11 +128,26 @@ class Server:
     def get_data_visualization(self, condition):
         _, _, _, _, old_count, old_timestamp = load_model_from_firebase(condition)
         return old_count, old_timestamp
+    
+    def standardize_columns(self, condition, df):
+        df = df.rename(columns={col: COLUMN_ALIASES[condition].get(col, col) for col in df.columns})
+        return df
+    
+    def validate_schema(self, df, expected_schema):
+        required = set(expected_schema["input_columns"] + [expected_schema["label_column"]])
+        missing = required - set(df.columns)
+        if missing:
+            print(f"Missing columns: {missing}")
+        return True
 
-    def recieve_encrypted_data(self, condition, data, target_name):
-        assert target_name in data.columns, "Target column not found!"
-        x = data.drop(columns=[target_name]).copy()
-        y = data[target_name].copy().squeeze()
+    def recieve_encrypted_data(self, condition, data, cols):
+        try:
+            data = self.standardize_columns(condition, data)
+            self.validate_schema(data, cols)
+        except:
+            print("Skipping file due to exception")
+        x = data[cols["input_columns"]].copy()
+        y = data[cols["label_column"]].copy().squeeze()
         for column in x.select_dtypes(include=['object']).columns:
             x[column] = LabelEncoder().fit_transform(x[column])
         if y.dtype == 'object':

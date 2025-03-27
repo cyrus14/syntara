@@ -13,7 +13,46 @@ app = Flask(__name__)
 CORS(app, origins="*")
 
 s = Server()
-condition_to_target = {"Heart Disease": "target", "ALS": "DiagnosedALS", "FOB": "DiagnosedFOP", "Gaucher": "GaucherDisease", "Kawasaki": "KawasakiDisease"}
+heart_disease = {
+    "input_columns": [
+        "age", "sex", "cp", "trestbps", "chol", "fbs", "restecg",
+        "thalach", "exang", "oldpeak", "slope", "ca", "thal"
+    ],
+    "label_column": "target"
+}
+als = {
+    "input_columns": [
+        "PatientID", "AgeYears", "Gender", "SymptomDurationMonths", "MuscleWeaknessScore",
+        "FVC_PercentPredicted", "UMN_Signs", "LMN_Signs", "BulbarOnset",
+        "ALSFRS_R_Score", "Creatinine_mg_dL", "DiseaseProgressionRate"
+    ],
+    "label_column": "DiagnosedALS"
+}
+fop = {
+    "input_columns": [
+        "PatientID", "AgeYears", "Gender", "ACVR1_MutationPresent", "AgeAtOnset",
+        "Frequency_HeterotopicOssificationsPerYear", "MobilityScore", "PainLevel",
+        "MalformedGreatToes", "FOPSeverityIndex"
+    ],
+    "label_column": "DiagnosedFOP"
+}
+gaucher = {
+    "input_columns": [
+        "PatientID", "AgeYears", "Gender", "GBA_MutationPresent", "SpleenVolume_mL",
+        "LiverVolume_mL", "Hemoglobin_g_dL", "PlateletCount_x10E9_L",
+        "ChitotriosidaseLevel_nmol_h_mL", "BoneLesions"
+    ],
+    "label_column": "GaucherDisease"
+}
+kawasaki = {
+    "input_columns": [
+        "PatientID", "AgeMonths", "Gender", "FeverDurationDays", "ConjunctivalInjection",
+        "OralChanges", "Rash", "ExtremityChanges", "CervicalLymphadenopathy",
+        "CRP_mg_dL", "ESR_mm_hr", "WBC_count_uL", "Platelets_count_uL"
+    ],
+    "label_column": "KawasakiDisease"
+}
+condition_cols = {"Heart Disease": heart_disease, "ALS": als, "FOP": fop, "Gaucher": gaucher, "Kawasaki": kawasaki}
 
 @app.route('/upload-csv', methods=['POST'])
 def upload_csv():
@@ -37,7 +76,7 @@ def upload_csv():
             csv_data_io = StringIO(csv_data)
             data_frame = pd.read_csv(csv_data_io)
 
-            s.recieve_encrypted_data(condition, data_frame, condition_to_target[condition])
+            s.recieve_encrypted_data(condition, data_frame, condition_cols[condition])
 
             return jsonify({"message": "File processed successfully with condition: " + condition}), 200
         
