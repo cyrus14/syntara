@@ -6,7 +6,7 @@ click==8.1.7
 colorama==0.4.6
 coloredlogs==15.0.1
 concrete
-concrete-ml==1.9.0
+concrete-ml
 contourpy==1.3.0
 cors==1.0.1
 cycler==0.12.1
@@ -36,7 +36,7 @@ mpmath==1.3.0
 networkx==2.8.8
 numpy>=1.24.2,<2.3
 packaging==24.1
-pandas==2.2.3
+pandas
 Pillow==9.5.0
 pluggy==1.5.0
 psutil==6.1.0
