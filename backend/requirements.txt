@@ -20,7 +20,6 @@ future==1.0.0
 gevent==24.10.3
 greenlet==3.1.1
 humanfriendly==10.0
-hummingbird-ml==0.4.4
 idna==3.10
 importlib_metadata==8.5.0
 importlib_resources==6.4.5
