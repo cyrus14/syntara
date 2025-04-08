@@ -12,6 +12,7 @@ cors
 cycler
 dill
 filelock
+firebase_admin
 Flask
 Flask-Cors
 flatbuffers
