@@ -85,4 +85,3 @@ firebase-key.json
 
 .DS_Store
 
-client/src/firebase.config.js
