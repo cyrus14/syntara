@@ -83,4 +83,4 @@ firebase-key.json
 
 **/.ipynb_checkpoints
 
-.DS_Store
+.DS_Storeclient/src/firebase.config.js
