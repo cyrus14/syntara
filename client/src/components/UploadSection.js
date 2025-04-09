@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { CONDITIONS } from "../constants";
+import { CONDITIONS, BACKEND_URL } from "../constants";
 
 function UploadSection({
   isUploadLoading,
@@ -51,7 +51,7 @@ function UploadSection({
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/upload-csv",
+        `${BACKEND_URL}/upload-csv`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -69,7 +69,7 @@ function UploadSection({
         setIsUploadLoading(false);
         setFeedback(
           error.response?.data?.error ||
-            "Error uploading file. Please try again."
+          "Error uploading file. Please try again."
         );
       }, 500);
     }
@@ -122,11 +122,10 @@ function UploadSection({
       )}
       {feedback && !isUploadLoading && (
         <div
-          className={`mt-4 font-semibold ${
-            feedback.toLowerCase().includes("success")
+          className={`mt-4 font-semibold ${feedback.toLowerCase().includes("success")
               ? "text-green-600"
               : "text-red-600"
-          }`}
+            }`}
         >
           {feedback}
         </div>

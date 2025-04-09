@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { CONDITIONS } from "../constants";
+import { CONDITIONS, BACKEND_URL } from "../constants";
 
 function PredictSection({
   isPredictLoading,
@@ -53,7 +53,7 @@ function PredictSection({
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/predict",
+        `${BACKEND_URL}/predict`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -72,7 +72,7 @@ function PredictSection({
         setIsPredictLoading(false);
         setFeedback(
           error.response?.data?.error ||
-            "Error during prediction. Please try again."
+          "Error during prediction. Please try again."
         );
       }, 500);
     }
@@ -125,11 +125,10 @@ function PredictSection({
       )}
       {feedback && !isPredictLoading && (
         <div
-          className={`mt-4 font-semibold ${
-            feedback.toLowerCase().includes("success")
-              ? "text-green-600"
-              : "text-red-600"
-          }`}
+          className={`mt-4 font-semibold ${feedback.toLowerCase().includes("success")
+            ? "text-green-600"
+            : "text-red-600"
+            }`}
         >
           {feedback}
         </div>

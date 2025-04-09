@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { CONDITIONS } from "../constants";
+import { CONDITIONS, BACKEND_URL } from "../constants";
 import LineChart from "./LineChart";
 
 function SearchSection() {
@@ -24,7 +24,7 @@ function SearchSection() {
       formData.append("condition", selectedFile);
 
       const response = await axios.post(
-        "http://localhost:8000/data-visualization",
+        `${BACKEND_URL}/data-visualization`,
         formData,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
