@@ -54,7 +54,9 @@ kawasaki = {
     ],
     "label_column": "KawasakiDisease"
 }
-condition_cols = {"Heart Disease": heart_disease, "ALS": als, "FOP": fop, "Gaucher": gaucher, "Kawasaki": kawasaki}
+condition_cols = {"Heart Disease": heart_disease, "ALS": als,
+                  "FOP": fop, "Gaucher": gaucher, "Kawasaki": kawasaki}
+
 
 @app.route('/upload-file', methods=['POST'])
 def upload_file():
@@ -103,8 +105,10 @@ def upload_file():
             s.recieve_encrypted_data(condition, df, condition_cols[condition])
             return jsonify({"message": f"File processed successfully with condition: {condition}"}), 200
 
+        
         except Exception as e:
             return jsonify({"error": f"Failed to process file: {str(e)}"}), 500
+
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -127,6 +131,7 @@ def predict():
     predictions = s.predict_data(condition, data_frame)
     return jsonify({"predictions": predictions}), 200
 
+
 @app.route("/data-visualization", methods=["POST"])
 def data_visualization():
     with app.app_context():
@@ -136,10 +141,11 @@ def data_visualization():
                 return jsonify({"error": "Condition not selected"}), 400
             count, timestamp = s.get_data_visualization(condition)
             return jsonify({"count": count, "timestamp": timestamp}), 200
-        
+
         except Exception as e:
             print(f"Exception occurred: {e}")
             return jsonify({"error": str(e)}), 500
+
 
 @app.route("/get-admin-emails", methods=["GET"])
 def get_admin_emails():
@@ -148,7 +154,8 @@ def get_admin_emails():
 
         # Reference to the JSON file in Firebase Storage
         bucket = storage.bucket()
-        blob = bucket.blob("admins.json")  # Replace with your file path in Storage
+        # Replace with your file path in Storage
+        blob = bucket.blob("admins.json")
 
         # Download the file content as a string
         file_content = blob.download_as_text()
@@ -167,5 +174,6 @@ def get_admin_emails():
         print(f"Exception occurred while fetching admin emails: {e}")
         return jsonify({"error": str(e)}), 500
 
+
 if __name__ == '__main__':
-    app.run(debug=False, port=8000, threaded=False)
+    app.run(host='0.0.0.0', port=8000, debug=False, threaded=False)

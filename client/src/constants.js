@@ -5,3 +5,5 @@ export const CONDITIONS = [
   "Gaucher",
   "Kawasaki",
 ];
+
+export const BACKEND_URL = "https://syntara-docker.onrender.com";

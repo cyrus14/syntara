@@ -1,7 +1,6 @@
 import io
 import joblib
 import logging
-import firebase_admin
 from firebase_admin import storage
 from initialize_firebase import initialize_firebase
 

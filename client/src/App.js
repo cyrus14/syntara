@@ -7,6 +7,8 @@ import AboutSection from "./components/AboutSection";
 import Footer from "./components/Footer";
 import { auth, provider, signInWithPopup, signOut } from "./firebase";
 import PredictSectionOnly from "./components/PredictSectionOnly";
+import { BACKEND_URL } from "./constants";
+
 
 function App() {
   const [user, setUser] = useState(null);
@@ -20,7 +22,7 @@ function App() {
         try {
           // Fetch admin emails from your backend
           const response = await fetch(
-            "http://localhost:8000/get-admin-emails"
+            `${BACKEND_URL}/get-admin-emails`
           );
           const adminEmailsJson = await response.json();
 

@@ -1,4 +1,3 @@
-import firebase_admin
 from firebase_admin import credentials, storage
 from initialize_firebase import initialize_firebase
 import joblib
