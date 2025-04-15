@@ -3,10 +3,12 @@ from flask_cors import CORS
 from client import Client
 from server import Server
 import pandas as pd
-from io import StringIO
+from io import StringIO, BytesIO
+import pandas as pd
 import json
 from initialize_firebase import initialize_firebase
 import firebase_admin
+from pathlib import Path
 from firebase_admin import credentials, firestore, storage
 app = Flask(__name__)
 
@@ -54,8 +56,8 @@ kawasaki = {
 }
 condition_cols = {"Heart Disease": heart_disease, "ALS": als, "FOP": fop, "Gaucher": gaucher, "Kawasaki": kawasaki}
 
-@app.route('/upload-csv', methods=['POST'])
-def upload_csv():
+@app.route('/upload-file', methods=['POST'])
+def upload_file():
     with app.app_context():
         try:
             condition = request.form.get("condition")
@@ -64,25 +66,45 @@ def upload_csv():
 
             if 'file' not in request.files:
                 return jsonify({"error": "No file part"}), 400
+
             file = request.files['file']
-            
-            if file.filename == '':
+            filename = file.filename.lower()
+
+            if filename == '':
                 return jsonify({"error": "No selected file"}), 400
-            if not file.filename.endswith('.csv'):
-                return jsonify({"error": "Only CSV files are allowed"}), 400
+            # Determine file extension
+            suffix = Path(filename).suffix
+            if suffix == ".csv":
+                content = file.read().decode("utf-8", errors="ignore")
+                data_io = StringIO(content)
+                df = pd.read_csv(data_io)
+            elif suffix == ".tsv":
+                content = file.read().decode("utf-8", errors="ignore")
+                data_io = StringIO(content)
+                df = pd.read_csv(data_io, sep='\t')
+            elif suffix in [".xls", ".xlsx"]:
+                content = BytesIO(file.read())
+                df = pd.read_excel(content)
+            elif suffix == ".json":
+                content = file.read().decode("utf-8", errors="ignore")
+                data_io = StringIO(content)
+                df = pd.read_json(data_io)
+            elif suffix == ".txt":
+                content = file.read().decode("utf-8", errors="ignore")
+                data_io = StringIO(content)
+                try:
+                    df = pd.read_csv(data_io)  # Try CSV-style first
+                except Exception:
+                    data_io.seek(0)
+                    df = pd.read_csv(data_io, sep="\t")  # Fallback to TSV-style
+            else:
+                return jsonify({"error": f"Unsupported file type: {suffix}"}), 400
 
-            # Read CSV file content without saving it to disk
-            csv_data = file.read().decode("utf-8")
-            csv_data_io = StringIO(csv_data)
-            data_frame = pd.read_csv(csv_data_io)
+            s.recieve_encrypted_data(condition, df, condition_cols[condition])
+            return jsonify({"message": f"File processed successfully with condition: {condition}"}), 200
 
-            s.recieve_encrypted_data(condition, data_frame, condition_cols[condition])
-
-            return jsonify({"message": "File processed successfully with condition: " + condition}), 200
-        
         except Exception as e:
-            print(f"Exception occurred: {e}")
-            return jsonify({"error": str(e)}), 500
+            return jsonify({"error": f"Failed to process file: {str(e)}"}), 500
 
 @app.route('/predict', methods=['POST'])
 def predict():
