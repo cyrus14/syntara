@@ -15,6 +15,7 @@ import sys
 import os
 from load_fb_model import load_model_from_firebase
 from save_fb_model import save_model_to_firebase
+from difflib import get_close_matches
 import time
 
 COLUMN_ALIASES = {
@@ -129,9 +130,28 @@ class Server:
         _, _, _, _, old_count, old_timestamp = load_model_from_firebase(condition)
         return old_count, old_timestamp
     
-    def standardize_columns(self, condition, df):
-        df = df.rename(columns={col: COLUMN_ALIASES[condition].get(col, col) for col in df.columns})
+    def fuzzy_column_mapping(self, condition, df):
+        original_columns = list(df.columns)
+        alias_map = COLUMN_ALIASES.get(condition, {})
+        alias_keys_lower = {k.lower(): v for k, v in alias_map.items()}
+        
+        new_columns = {}
+        for col in original_columns:
+            col_lower = col.lower().strip()
+            if col_lower in alias_keys_lower:
+                new_columns[col] = alias_keys_lower[col_lower]
+            else:
+                close = get_close_matches(col_lower, alias_keys_lower.keys(), n=1, cutoff=0.85)
+                if close:
+                    new_columns[col] = alias_keys_lower[close[0]]
+                else:
+                    new_columns[col] = col  # fallback to original
+
+        df = df.rename(columns=new_columns)
         return df
+
+    def standardize_columns(self, condition, df):
+        return self.fuzzy_column_mapping(condition, df)
     
     def validate_schema(self, df, expected_schema):
         required = set(expected_schema["input_columns"] + [expected_schema["label_column"]])

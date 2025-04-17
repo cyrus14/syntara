@@ -26,11 +26,11 @@ function UploadSection({
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
-    if (selectedFile && selectedFile.type === "text/csv") {
+    if (selectedFile) {
       setFile(selectedFile);
       setFeedback("");
     } else {
-      setFeedback("Please select a valid CSV file.");
+      setFeedback("Please select a valid file.");
       setFile(null);
     }
   };
@@ -51,7 +51,7 @@ function UploadSection({
 
     try {
       const response = await axios.post(
-        `${BACKEND_URL}/upload-csv`,
+        `${BACKEND_URL}/upload-file`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
