@@ -47,6 +47,7 @@ pyparsing
 PySocks
 pytest
 python-dateutil
+python-dotenv
 pytz
 PyYAML
 requests

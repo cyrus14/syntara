@@ -13,7 +13,7 @@ def load_model_from_firebase(model_name):
         blob = bucket.blob(model_name)
         model_stream = io.BytesIO()
         blob.download_to_file(model_stream)
-        model_stream.seek(0)  # Reset the stream position to the beginning
+        model_stream.seek(0) 
 
         model = joblib.load(model_stream)
         logging.info(f"Model {model_name} loaded from Firebase Storage.")
