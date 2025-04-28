@@ -6,7 +6,7 @@ export const CONDITIONS = [
   "Kawasaki",
 ];
 
-const RUNNING_LOCALLY = true;
+const RUNNING_LOCALLY = false;
 
 export const BACKEND_URL = RUNNING_LOCALLY 
   ? "http://localhost:8000/" 
