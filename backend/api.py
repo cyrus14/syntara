@@ -161,7 +161,7 @@ def get_admin_emails():
         file_content = blob.download_as_text()
         print(f"File content fetched: {file_content}")
 
-        # Parse the JSON file
+        # Parse the JS  ON file
         admin_data = json.loads(file_content)
         print(f"Parsed JSON data: {admin_data}")
 

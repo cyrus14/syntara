@@ -6,4 +6,8 @@ export const CONDITIONS = [
   "Kawasaki",
 ];
 
-export const BACKEND_URL = "https://syntara-docker.onrender.com";
+const RUNNING_LOCALLY = true;
+
+export const BACKEND_URL = RUNNING_LOCALLY 
+  ? "http://localhost:8000/" 
+  : "https://syntara-docker.onrender.com";

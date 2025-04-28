@@ -18,11 +18,15 @@ from save_fb_model import save_model_to_firebase
 from difflib import get_close_matches
 import time
 
+ENABLE_FUZZY_MAPPING = True  
+ENABLE_MISSING_DATA = True
+ENABLE_OUTLIER_HANDLING = True
+
 COLUMN_ALIASES = {
     # heart_disease (standard columns: age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal)
     "Heart Disease": {
         "gender": "sex",
-        "chest_pain_type": "cp",
+        "chest_pain": "cp",
         "resting_blood_pressure": "trestbps",
         "cholesterol": "chol",
         "fasting_bs": "fbs",
@@ -92,6 +96,17 @@ PARAMETER_RANGE = [MIN_PARAM, MAX_PARAM]
 MAX_ITER = 1
 
 class Server:    
+    
+    def clip_outliers(self, df, lower_percentile=1, upper_percentile=99):
+        if ENABLE_OUTLIER_HANDLING:
+            print("Clipping outliers in numeric features.")
+            for col in df.select_dtypes(include=[np.number]).columns:
+                lower = np.percentile(df[col], lower_percentile)
+                upper = np.percentile(df[col], upper_percentile)
+                df[col] = np.clip(df[col], lower, upper)
+        return df
+
+
     def scale_to_range(self, data, lower_bound=MIN_PARAM, upper_bound=MAX_PARAM):
         mean = np.mean(data, axis=0)
         std = np.std(data, axis=0)
@@ -157,17 +172,33 @@ class Server:
         required = set(expected_schema["input_columns"] + [expected_schema["label_column"]])
         missing = required - set(df.columns)
         if missing:
-            print(f"Missing columns: {missing}")
+            raise Exception(f"Missing columns: {missing}")
         return True
+    
+    def handle_missing_data(self, df):
+        if ENABLE_MISSING_DATA:
+            print("Filling missing data with column means.")
+            return df.fillna(df.mean(numeric_only=True))
+        else:
+            print("Filling missing data with 0.")
+            return df.fillna(0)
 
     def recieve_encrypted_data(self, condition, data, cols):
         try:
-            data = self.standardize_columns(condition, data)
-            self.validate_schema(data, cols)
+            if ENABLE_FUZZY_MAPPING:
+                data = self.standardize_columns(condition, data)
+                self.validate_schema(data, cols)
+                x = data[cols["input_columns"]].copy()
+                y = data[cols["label_column"]].copy().squeeze()
+            else:
+                print("Skipping fuzzy mapping and schema validation")
+                x = data.iloc[:, :-1].copy()
+                y = data.iloc[:, -1].copy().squeeze()
         except:
             print("Skipping file due to exception")
-        x = data[cols["input_columns"]].copy()
-        y = data[cols["label_column"]].copy().squeeze()
+        
+        x = self.handle_missing_data(x) 
+        x = self.clip_outliers(x)
         for column in x.select_dtypes(include=['object']).columns:
             x[column] = LabelEncoder().fit_transform(x[column])
         if y.dtype == 'object':
